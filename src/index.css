@@ -10,14 +10,33 @@
   }
 
   body {
-    @apply bg-pixel-darker text-pixel-white;
+    background: #3d2b54;
+    @apply text-pixel-white;
     font-family: 'Press Start 2P', cursive;
     overflow-x: hidden;
     overflow-y: auto;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(212, 181, 255, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(255, 179, 217, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(126, 179, 255, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
   }
 
   #root {
     @apply min-h-screen;
+    position: relative;
+    z-index: 1;
   }
 }
 
@@ -70,23 +89,39 @@
 
   /* HP Bar Styles */
   .hp-bar-container {
-    @apply relative h-4 bg-pixel-darker border-2 border-pixel-white;
+    @apply relative h-4 bg-pixel-darker border-2 border-pixel-light-purple/60;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+  }
+
+  .hp-bar-container::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
   }
 
   .hp-bar-fill {
-    @apply h-full transition-all duration-500;
+    @apply h-full transition-all duration-500 relative;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
 
   .hp-bar-fill.high {
-    @apply bg-pixel-green;
+    background: linear-gradient(90deg, #6bc96b 0%, #a3ffb8 100%);
   }
 
   .hp-bar-fill.medium {
-    @apply bg-pixel-yellow;
+    background: linear-gradient(90deg, #ffd93d 0%, #ffe7a3 100%);
   }
 
   .hp-bar-fill.low {
-    @apply bg-pixel-red;
+    background: linear-gradient(90deg, #d84654 0%, #ff6b9d 100%);
   }
 
   /* Dialog Box (Pokemon Style) */
@@ -124,16 +159,36 @@
 
   /* Pixel Button */
   .pixel-btn {
-    @apply px-6 py-3 bg-pixel-purple text-pixel-cream border-4 border-pixel-light-purple;
+    @apply px-6 py-3 bg-gradient-to-r from-pixel-purple to-pixel-purple text-pixel-cream border-4 border-pixel-light-purple;
     @apply font-pixel text-xs uppercase tracking-wide;
-    @apply transition-all duration-100 cursor-pointer select-none;
-    box-shadow: 4px 4px 0px rgba(26, 15, 38, 0.8);
+    @apply transition-all duration-200 cursor-pointer select-none;
+    box-shadow:
+      0 0 20px rgba(212, 181, 255, 0.3),
+      4px 4px 0px rgba(26, 15, 38, 0.8),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pixel-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(212, 181, 255, 0.2) 0%, rgba(255, 179, 217, 0.2) 100%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .pixel-btn:hover::before {
+    opacity: 1;
   }
 
   .pixel-btn:hover {
-    @apply bg-pixel-light-purple text-pixel-dark;
+    @apply bg-gradient-to-r from-pixel-light-purple to-pixel-pink text-pixel-dark;
     transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0px rgba(26, 15, 38, 0.8);
+    box-shadow:
+      0 0 30px rgba(255, 179, 217, 0.5),
+      2px 2px 0px rgba(26, 15, 38, 0.8);
   }
 
   .pixel-btn:active {
@@ -146,11 +201,23 @@
     transform: none;
   }
 
+  .pixel-btn:disabled::before {
+    display: none;
+  }
+
   /* Pixel Card */
   .pixel-card {
-    @apply bg-pixel-purple/40 border-4 border-pixel-light-purple p-4;
-    box-shadow: 4px 4px 0px rgba(26, 15, 38, 0.6);
-    backdrop-filter: blur(4px);
+    @apply bg-pixel-purple/30 border-4 border-pixel-light-purple/60 p-4;
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      4px 4px 0px rgba(26, 15, 38, 0.4);
+    backdrop-filter: blur(12px);
+    background-image: linear-gradient(
+      135deg,
+      rgba(212, 181, 255, 0.05) 0%,
+      rgba(74, 53, 99, 0.2) 100%
+    );
   }
 
   /* Arena Grid Cell */
@@ -258,5 +325,64 @@
 
   .text-xl-pixel {
     font-size: 20px;
+  }
+
+  /* Glow effect */
+  .glow {
+    box-shadow: 0 0 20px currentColor;
+  }
+
+  .glow-sm {
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  .glow-lg {
+    box-shadow: 0 0 40px currentColor;
+  }
+
+  /* Floating animation */
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-float-slow {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  /* Sparkle effect */
+  @keyframes sparkle {
+    0%, 100% {
+      opacity: 0;
+      transform: scale(0);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .sparkle {
+    animation: sparkle 2s ease-in-out infinite;
+  }
+
+  /* Input field styling */
+  input[type="text"],
+  textarea {
+    transition: all 0.3s ease;
+  }
+
+  input[type="text"]:focus,
+  textarea:focus {
+    box-shadow: 0 0 20px rgba(255, 179, 217, 0.3);
+    transform: translateY(-2px);
   }
 }

@@ -5,6 +5,7 @@ import { GameSetup } from './components/setup/GameSetup'
 import { BattleArena } from './components/arena/BattleArena'
 import { BattleScreen } from './components/battle/BattleScreen'
 import { VictoryScreen } from './components/results/VictoryScreen'
+import { StarField } from './components/common/StarField'
 
 function App() {
   const { sessionId, currentScreen } = useGameStore()
@@ -14,7 +15,8 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-pixel-darker crt-effect">
+      <div className="min-h-screen bg-[#3d2b54] crt-effect">
+        <StarField />
         <Routes>
           <Route path="/" element={<GameSetup />} />
           <Route

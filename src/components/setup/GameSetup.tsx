@@ -68,26 +68,42 @@ export const GameSetup = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8">
+    <div className="min-h-screen flex flex-col items-center justify-center p-8 py-16 relative overflow-hidden">
       <motion.div
-        className="w-full max-w-4xl space-y-8"
+        className="w-full max-w-4xl space-y-8 relative z-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         {/* Title */}
-        <div className="text-center space-y-4">
-          <motion.img
-            src="/overkill_logo.png"
-            alt="OVERKILL"
-            className="w-64 h-64 mx-auto"
+        <div className="text-center space-y-6">
+          <motion.div
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-          />
-          <PixelText variant="body" className="text-pixel-cream">
-            Battle Royale Decision Maker
-          </PixelText>
+          >
+            <img
+              src="/overkill_logo.png"
+              alt="OVERKILL"
+              className="w-72 h-72 mx-auto drop-shadow-2xl"
+              style={{ filter: 'drop-shadow(0 0 40px rgba(212, 181, 255, 0.3))' }}
+            />
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            <PixelText variant="h3" className="text-pixel-cream">
+              Battle Royale Decision Maker
+            </PixelText>
+            <PixelText variant="small" className="text-pixel-gray mt-2">
+              Overkill your overthinking
+            </PixelText>
+            <PixelText variant="small" className="text-pixel-pink mt-1">
+              By watching AI agents battle your decisions out!
+            </PixelText>
+          </motion.div>
         </div>
 
         {/* Background Input */}

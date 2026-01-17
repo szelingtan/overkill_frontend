@@ -25,9 +25,33 @@ export const VictoryScreen = () => {
   }
 
   return (
-    <div className="min-h-screen p-8">
+    <div className="min-h-screen p-8 py-16 relative overflow-hidden">
+      {/* Confetti-like decorative elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(20)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-3 h-3 bg-pixel-pink/30 rounded-sm"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              y: [0, -20, 0],
+              rotate: [0, 360],
+              opacity: [0.3, 0.7, 0.3],
+            }}
+            transition={{
+              duration: 3 + Math.random() * 2,
+              repeat: Infinity,
+              delay: Math.random() * 2,
+            }}
+          />
+        ))}
+      </div>
+
       <motion.div
-        className="max-w-5xl mx-auto space-y-8"
+        className="max-w-5xl mx-auto space-y-8 relative z-10"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
@@ -38,14 +62,33 @@ export const VictoryScreen = () => {
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200, damping: 15 }}
         >
-          <img
+          <motion.img
             src="/overkill_logo.png"
             alt="OVERKILL"
-            className="w-24 h-24 mx-auto mb-2"
+            className="w-32 h-32 mx-auto mb-4"
+            animate={{
+              filter: [
+                'drop-shadow(0 0 20px rgba(212, 181, 255, 0.6))',
+                'drop-shadow(0 0 40px rgba(255, 179, 217, 0.8))',
+                'drop-shadow(0 0 20px rgba(212, 181, 255, 0.6))',
+              ]
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
           />
-          <PixelText variant="h1" shadow className="text-pixel-blue">
-            VICTORY!
-          </PixelText>
+          <motion.div
+            animate={{
+              textShadow: [
+                '0 0 20px rgba(126, 179, 255, 0.8)',
+                '0 0 40px rgba(255, 179, 217, 0.8)',
+                '0 0 20px rgba(126, 179, 255, 0.8)',
+              ]
+            }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            <PixelText variant="h1" shadow className="text-pixel-blue">
+              VICTORY!
+            </PixelText>
+          </motion.div>
 
           <PixelCard className="border-pixel-pink bg-pixel-pink/20 inline-block">
             <div className="space-y-3">

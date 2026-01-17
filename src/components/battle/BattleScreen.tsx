@@ -49,9 +49,17 @@ export const BattleScreen = () => {
   const currentTurn = currentTurnIndex >= 0 ? turns[currentTurnIndex] : null
 
   return (
-    <div className="min-h-screen p-8">
+    <div className="min-h-screen p-8 py-12 relative overflow-hidden">
+      {/* Animated background effects */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-0 w-full h-full">
+          <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-pixel-pink/5 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-pixel-blue/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        </div>
+      </div>
+
       <motion.div
-        className="max-w-6xl mx-auto space-y-8"
+        className="max-w-6xl mx-auto space-y-8 relative z-10"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}

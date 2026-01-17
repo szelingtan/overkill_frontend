@@ -24,7 +24,10 @@ export const ArenaGrid = ({
   }
 
   return (
-    <div className="relative border-4 border-pixel-light-purple bg-pixel-purple/30 shadow-pixel">
+    <div className="relative border-4 border-pixel-light-purple/60 bg-gradient-to-br from-pixel-purple/20 to-pixel-dark/40 shadow-2xl">
+      {/* Glow effect */}
+      <div className="absolute -inset-1 bg-gradient-to-r from-pixel-pink/20 via-pixel-blue/20 to-pixel-light-purple/20 blur-xl -z-10" />
+
       {/* Grid Background */}
       <div
         className="relative"
@@ -57,10 +60,13 @@ export const ArenaGrid = ({
 
       {/* Arena Title */}
       <motion.div
-        className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-pixel-purple border-4 border-pixel-pink px-6 py-2"
+        className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-pixel-purple via-pixel-pink/30 to-pixel-purple border-4 border-pixel-pink px-8 py-3 shadow-2xl"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
+        style={{
+          boxShadow: '0 0 30px rgba(255, 179, 217, 0.4), 4px 4px 0px rgba(26, 15, 38, 0.6)'
+        }}
       >
         <span className="text-md-pixel text-pixel-cream">BATTLE ARENA</span>
       </motion.div>
