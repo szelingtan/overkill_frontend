@@ -30,7 +30,7 @@ export const ChoiceInput = ({
         <h3 className="text-md-pixel text-pixel-pink">
           Your Choices ({choices.length})
         </h3>
-        <PixelButton onClick={handleAddChoice} size="sm" variant="secondary">
+        <PixelButton disabled={choices.length >= 8} onClick={handleAddChoice} size="sm" variant="secondary">
           + Add Choice
         </PixelButton>
       </div>
