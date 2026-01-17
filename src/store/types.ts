@@ -13,6 +13,7 @@ export interface JudgeAgent {
 }
 
 export interface Choice {
+  id: string
   name: string
   description?: string
 }
@@ -54,7 +55,8 @@ export interface JudgeVote {
 
 export interface BattleTurn {
   turnNumber: number
-  argument: BattleArgument
+  argument1: BattleArgument
+  argument2: BattleArgument
   votes: JudgeVote[]
   damage: number
 }
@@ -151,20 +153,11 @@ export interface GameFinishedData {
   totalBattles: number
 }
 
-export interface GameContext {
-  title: string,
-  description: string,
-  constraints: string,
-  mood: string,
-  user_location: string,
-  user_budget: string
-}
-
 // Game setup types
 export interface GameSetupData {
   judges: JudgeAgent[]
-  agents: ChoiceAgent[]
-  context: GameContext
+  choices: Choice[]
+  context: string
 }
 
 // Animation types
@@ -179,8 +172,9 @@ export interface DamageAnimation {
 // Game state types
 export interface GameState {
   // Setup
-  background: string
-  choices: ChoiceAgent[]
+  context: string
+  choices: Choice[] // before backend setup of agents
+  choiceAgents: ChoiceAgent[] // after backend setup
   judges: JudgeAgent[]
 
   // Session
