@@ -1,3 +1,4 @@
+import { flattenGameSetupData } from '@/util/flatten'
 import type { GameSetupData } from '../store/types'
 
 const API_BASE_URL = 'http://localhost:8000/api'
@@ -9,12 +10,13 @@ export interface CreateGameResponse {
 
 export const api = {
   async createGame(setupData: GameSetupData): Promise<CreateGameResponse> {
+    console.log(flattenGameSetupData(setupData));
     const response = await fetch(`${API_BASE_URL}/game/create`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(setupData),
+      body: JSON.stringify(flattenGameSetupData(setupData)),
     })
 
     if (!response.ok) {
