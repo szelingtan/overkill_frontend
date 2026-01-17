@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion'
 import { HPBar } from '../common'
-import type { Agent } from '../../store/types'
+import type { ChoiceAgent } from '../../store/types'
 
 interface AgentSpriteProps {
-  agent: Agent
+  agent: ChoiceAgent
   cellSize: number
 }
 
@@ -78,8 +78,8 @@ export const AgentSprite = ({ agent, cellSize }: AgentSpriteProps) => {
       {/* HP Bar */}
       <div style={{ width: cellSize * 0.8 }}>
         <HPBar
-          current={agent.hp}
-          max={agent.maxHp}
+          current={agent.currentGlobalHp}
+          max={agent.maxGlobalHp}
           size="sm"
           showNumbers={false}
           animated={true}

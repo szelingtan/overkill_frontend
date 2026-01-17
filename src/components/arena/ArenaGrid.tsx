@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion'
 import { AgentSprite } from './AgentSprite'
-import type { Agent } from '../../store/types'
+import type { ChoiceAgent } from '../../store/types'
 
 interface ArenaGridProps {
   width: number
   height: number
-  agents: Agent[]
+  agents: ChoiceAgent[]
   cellSize?: number
 }
 

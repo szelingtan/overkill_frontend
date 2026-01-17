@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion'
 import { PixelCard, HPBar, PixelText } from '../common'
-import type { Agent } from '../../store/types'
+import type { ChoiceAgent } from '../../store/types'
 
 interface ArenaHUDProps {
-  agents: Agent[]
+  agents: ChoiceAgent[]
 }
 
 export const ArenaHUD = ({ agents }: ArenaHUDProps) => {
@@ -70,7 +70,7 @@ export const ArenaHUD = ({ agents }: ArenaHUDProps) => {
                     )}
                   </div>
                   <HPBar
-                    current={agent.globalHp}
+                    current={agent.currentGlobalHp}
                     max={agent.maxGlobalHp}
                     label="Global HP"
                     size="sm"

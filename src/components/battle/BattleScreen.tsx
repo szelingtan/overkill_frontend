@@ -92,8 +92,8 @@ export const BattleScreen = () => {
                   </PixelText>
                 </div>
                 <HPBar
-                  current={agent1.hp}
-                  max={agent1.maxHp}
+                  current={agent1.currentBattleHp}
+                  max={agent1.maxBattleHp}
                   label="HP"
                   size="lg"
                   showNumbers={true}
@@ -133,8 +133,8 @@ export const BattleScreen = () => {
                   </PixelText>
                 </div>
                 <HPBar
-                  current={agent2.hp}
-                  max={agent2.maxHp}
+                  current={agent2.currentBattleHp}
+                  max={agent2.maxBattleHp}
                   label="HP"
                   size="lg"
                   showNumbers={true}
@@ -145,15 +145,22 @@ export const BattleScreen = () => {
         </div>
 
         {/* Arguments */}
-        {currentTurn && currentTurn.arguments.length > 0 && (
+        {currentTurn && currentTurn.argument1 && (
           <div className="grid grid-cols-2 gap-8">
-            {currentTurn.arguments.map((arg, index) => (
-              <ArgumentDisplay
-                key={arg.agentId}
-                argument={arg}
-                side={index === 0 ? 'left' : 'right'}
-              />
-            ))}
+            <ArgumentDisplay
+              key={0}
+              argument={currentTurn.argument1}
+              side={'left'}
+            />
+          </div>
+        )}
+        {currentTurn && currentTurn.argument2 && (
+          <div className="grid grid-cols-2 gap-8">
+            <ArgumentDisplay
+              key={0}
+              argument={currentTurn.argument2}
+              side={'right'}
+            />
           </div>
         )}
 
@@ -175,7 +182,7 @@ export const BattleScreen = () => {
         )}
 
         {/* Battle Dialog */}
-        {currentTurn && (
+        {currentTurn && currentTurn.loser && (
           <div className="flex justify-center">
             <div className="max-w-2xl w-full">
               <BattleDialog

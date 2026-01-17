@@ -80,8 +80,6 @@ export const BattleArena = () => {
         >
           <PixelText variant="small" className="text-pixel-gray">
             Watch as your choices battle it out in the arena!
-            <br />
-            When two agents collide, they'll enter combat!
           </PixelText>
         </motion.div>
       </motion.div>

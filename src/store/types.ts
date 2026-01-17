@@ -39,8 +39,7 @@ export interface ChoiceAgent {
 
 // Battle types
 export interface BattleArgument {
-  agentId: string
-  opponentId: string
+  agentName: string
   argument: string
   timestamp: number
 }
@@ -59,6 +58,7 @@ export interface BattleTurn {
   argument2: BattleArgument
   votes: JudgeVote[]
   damage: number
+  loser?: number
 }
 
 export interface Battle {
