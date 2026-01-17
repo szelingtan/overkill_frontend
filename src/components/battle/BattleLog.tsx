@@ -11,18 +11,18 @@ export const BattleLog = ({ turns }: BattleLogProps) => {
 
   return (
     <PixelCard className="max-h-48 overflow-y-auto">
-      <PixelText variant="h3" className="text-pixel-yellow mb-3">
+      <PixelText variant="h3" className="text-pixel-pink mb-3">
         Battle Log
       </PixelText>
       <div className="space-y-2">
         {turns.map((turn) => (
           <motion.div
             key={turn.turnNumber}
-            className="text-xs-pixel text-pixel-gray border-l-2 border-pixel-blue pl-2"
+            className="text-xs-pixel text-pixel-gray border-l-2 border-pixel-light-purple pl-2"
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <span className="text-pixel-yellow">Turn {turn.turnNumber}:</span>{' '}
+            <span className="text-pixel-cream">Turn {turn.turnNumber}:</span>{' '}
             {turn.loser} took {Math.floor(turn.damage)} damage!
           </motion.div>
         ))}

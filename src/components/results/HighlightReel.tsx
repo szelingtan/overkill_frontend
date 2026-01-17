@@ -24,7 +24,7 @@ export const HighlightReel = ({ battles }: HighlightReelProps) => {
 
   return (
     <div className="space-y-4">
-      <PixelText variant="h3" className="text-pixel-yellow text-center">
+      <PixelText variant="h3" className="text-pixel-pink text-center">
         HIGHLIGHT REEL
       </PixelText>
 
@@ -36,19 +36,19 @@ export const HighlightReel = ({ battles }: HighlightReelProps) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.15 }}
           >
-            <PixelCard className="border-pixel-yellow">
+            <PixelCard className="border-pixel-pink">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm-pixel text-pixel-yellow">
+                  <span className="text-sm-pixel text-pixel-cream">
                     {highlight.agent1} vs {highlight.agent2}
                   </span>
-                  <span className="text-sm-pixel text-pixel-red">
+                  <span className="text-sm-pixel text-pixel-hot-pink">
                     {Math.floor(highlight.damage)} DMG!
                   </span>
                 </div>
 
                 {highlight.arguments[0] && (
-                  <div className="text-xs-pixel text-pixel-white bg-pixel-darker p-2 border border-pixel-blue">
+                  <div className="text-xs-pixel text-pixel-cream bg-pixel-darker p-2 border border-pixel-light-purple">
                     "{highlight.arguments[0].argument.slice(0, 150)}
                     {highlight.arguments[0].argument.length > 150 ? '...' : ''}"
                   </div>
@@ -56,7 +56,7 @@ export const HighlightReel = ({ battles }: HighlightReelProps) => {
 
                 {highlight.votes[0] && (
                   <div className="text-xs-pixel text-pixel-gray">
-                    <span className="text-pixel-light-blue">
+                    <span className="text-pixel-blue">
                       {highlight.votes[0].judgeName}:
                     </span>{' '}
                     {highlight.votes[0].reaction}

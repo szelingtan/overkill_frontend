@@ -25,11 +25,11 @@ export const RankingList = ({ rankings }: RankingListProps) => {
           <PixelCard
             className={`${
               index === 0
-                ? 'border-pixel-yellow bg-pixel-yellow/10'
+                ? 'border-pixel-pink bg-pixel-pink/10'
                 : index === 1
-                ? 'border-pixel-light-blue bg-pixel-light-blue/10'
+                ? 'border-pixel-blue bg-pixel-blue/10'
                 : index === 2
-                ? 'border-pixel-red bg-pixel-red/10'
+                ? 'border-pixel-light-purple bg-pixel-light-purple/10'
                 : 'border-pixel-gray'
             }`}
           >
@@ -46,7 +46,7 @@ export const RankingList = ({ rankings }: RankingListProps) => {
                     className="w-8 h-8 border-4 border-black"
                     style={{ backgroundColor: agent.color }}
                   />
-                  <span className="text-md-pixel text-pixel-white">
+                  <span className="text-md-pixel text-pixel-cream">
                     {agent.name}
                   </span>
                 </div>

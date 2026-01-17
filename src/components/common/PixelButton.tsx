@@ -16,9 +16,9 @@ export const PixelButton = ({
   ...props
 }: PixelButtonProps) => {
   const variants = {
-    primary: 'bg-pixel-blue border-pixel-light-blue hover:bg-pixel-light-blue',
-    secondary: 'bg-pixel-gray border-pixel-white hover:bg-pixel-white hover:text-pixel-dark',
-    danger: 'bg-pixel-red border-pixel-yellow hover:bg-pixel-yellow hover:text-pixel-dark',
+    primary: 'bg-pixel-blue border-pixel-light-blue hover:bg-pixel-light-blue hover:text-pixel-dark',
+    secondary: 'bg-pixel-purple border-pixel-pink hover:bg-pixel-pink hover:text-pixel-dark',
+    danger: 'bg-pixel-hot-pink border-pixel-pink hover:bg-pixel-pink hover:text-pixel-dark',
   }
 
   const sizes = {

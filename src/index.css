@@ -12,7 +12,8 @@
   body {
     @apply bg-pixel-darker text-pixel-white;
     font-family: 'Press Start 2P', cursive;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   #root {
@@ -24,7 +25,7 @@
   /* Pixel Border Effect */
   .pixel-border {
     position: relative;
-    background: linear-gradient(135deg, #2d4a96 0%, #1a2f5c 100%);
+    background: linear-gradient(135deg, #4a3563 0%, #2d1b3d 100%);
   }
 
   .pixel-border::before {
@@ -32,7 +33,7 @@
     position: absolute;
     inset: 0;
     padding: 4px;
-    background: linear-gradient(135deg, #5b8dd6, #2d4a96);
+    background: linear-gradient(135deg, #d4b5ff, #ffb3d9);
     -webkit-mask:
       linear-gradient(#fff 0 0) content-box,
       linear-gradient(#fff 0 0);
@@ -90,11 +91,11 @@
 
   /* Dialog Box (Pokemon Style) */
   .dialog-box {
-    @apply bg-pixel-white text-pixel-dark p-4 relative;
-    border: 4px solid #000;
+    @apply bg-pixel-cream text-pixel-dark p-4 relative;
+    border: 4px solid #4a3563;
     box-shadow:
-      inset -4px -4px 0px rgba(0, 0, 0, 0.2),
-      4px 4px 0px rgba(0, 0, 0, 0.8);
+      inset -4px -4px 0px rgba(212, 181, 255, 0.3),
+      4px 4px 0px rgba(26, 15, 38, 0.6);
   }
 
   .dialog-box::before {
@@ -106,7 +107,7 @@
     height: 0;
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
-    border-bottom: 10px solid #000;
+    border-bottom: 10px solid #4a3563;
   }
 
   .dialog-box::after {
@@ -118,26 +119,26 @@
     height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-bottom: 8px solid #f5f5f5;
+    border-bottom: 8px solid #fff4d6;
   }
 
   /* Pixel Button */
   .pixel-btn {
-    @apply px-6 py-3 bg-pixel-blue text-pixel-white border-4 border-pixel-light-blue;
+    @apply px-6 py-3 bg-pixel-purple text-pixel-cream border-4 border-pixel-light-purple;
     @apply font-pixel text-xs uppercase tracking-wide;
     @apply transition-all duration-100 cursor-pointer select-none;
-    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.8);
+    box-shadow: 4px 4px 0px rgba(26, 15, 38, 0.8);
   }
 
   .pixel-btn:hover {
-    @apply bg-pixel-light-blue;
+    @apply bg-pixel-light-purple text-pixel-dark;
     transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.8);
+    box-shadow: 2px 2px 0px rgba(26, 15, 38, 0.8);
   }
 
   .pixel-btn:active {
     transform: translate(4px, 4px);
-    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.8);
+    box-shadow: 0px 0px 0px rgba(26, 15, 38, 0.8);
   }
 
   .pixel-btn:disabled {
@@ -147,16 +148,17 @@
 
   /* Pixel Card */
   .pixel-card {
-    @apply bg-pixel-dark border-4 border-pixel-blue p-4;
-    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.8);
+    @apply bg-pixel-purple/40 border-4 border-pixel-light-purple p-4;
+    box-shadow: 4px 4px 0px rgba(26, 15, 38, 0.6);
+    backdrop-filter: blur(4px);
   }
 
   /* Arena Grid Cell */
   .grid-cell {
-    @apply border border-pixel-gray/20;
+    @apply border border-pixel-light-purple/20;
     background-image:
-      linear-gradient(45deg, transparent 48%, rgba(91, 141, 214, 0.05) 48%, rgba(91, 141, 214, 0.05) 52%, transparent 52%),
-      linear-gradient(-45deg, transparent 48%, rgba(91, 141, 214, 0.05) 48%, rgba(91, 141, 214, 0.05) 52%, transparent 52%);
+      linear-gradient(45deg, transparent 48%, rgba(212, 181, 255, 0.08) 48%, rgba(212, 181, 255, 0.08) 52%, transparent 52%),
+      linear-gradient(-45deg, transparent 48%, rgba(212, 181, 255, 0.08) 48%, rgba(212, 181, 255, 0.08) 52%, transparent 52%);
     background-size: 8px 8px;
   }
 
@@ -200,7 +202,7 @@
 
   /* Pixel Spinner */
   .pixel-spinner {
-    @apply inline-block w-8 h-8 border-4 border-pixel-blue border-t-pixel-light-blue;
+    @apply inline-block w-8 h-8 border-4 border-pixel-purple border-t-pixel-pink;
     animation: spin 1s linear infinite;
   }
 

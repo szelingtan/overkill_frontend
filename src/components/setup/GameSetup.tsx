@@ -77,10 +77,15 @@ export const GameSetup = () => {
       >
         {/* Title */}
         <div className="text-center space-y-4">
-          <PixelText variant="h1" shadow className="text-pixel-yellow">
-            OVERKILL
-          </PixelText>
-          <PixelText variant="body" className="text-pixel-white">
+          <motion.img
+            src="/overkill_logo.png"
+            alt="OVERKILL"
+            className="w-64 h-64 mx-auto"
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+          />
+          <PixelText variant="body" className="text-pixel-cream">
             Battle Royale Decision Maker
           </PixelText>
         </div>
@@ -88,7 +93,7 @@ export const GameSetup = () => {
         {/* Background Input */}
         <PixelCard animate>
           <div className="space-y-3">
-            <label className="text-md-pixel text-pixel-yellow">
+            <label className="text-md-pixel text-pixel-pink">
               Decision Background
             </label>
             <textarea
@@ -96,7 +101,7 @@ export const GameSetup = () => {
               onChange={(e) => handleBackgroundChange(e.target.value)}
               placeholder="What are you trying to decide? Provide context..."
               rows={4}
-              className="w-full bg-pixel-darker text-pixel-white border-2 border-pixel-blue p-3 text-sm-pixel font-pixel resize-none focus:border-pixel-light-blue outline-none"
+              className="w-full bg-pixel-darker text-pixel-cream border-2 border-pixel-light-purple p-3 text-sm-pixel font-pixel resize-none focus:border-pixel-pink outline-none placeholder:text-pixel-gray"
             />
             <p className="text-xs-pixel text-pixel-gray">
               Example: "I need to choose a restaurant for dinner with friends.

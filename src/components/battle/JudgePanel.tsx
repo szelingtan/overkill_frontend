@@ -9,7 +9,7 @@ interface JudgePanelProps {
 export const JudgePanel = ({ votes }: JudgePanelProps) => {
   return (
     <div className="space-y-4">
-      <PixelText variant="h3" className="text-pixel-yellow text-center">
+      <PixelText variant="h3" className="text-pixel-pink text-center">
         JUDGE REACTIONS
       </PixelText>
 
@@ -26,11 +26,11 @@ export const JudgePanel = ({ votes }: JudgePanelProps) => {
                 stiffness: 200,
               }}
             >
-              <PixelCard className="border-pixel-yellow">
+              <PixelCard className="border-pixel-pink">
                 <div className="space-y-2">
                   {/* Judge Name */}
                   <div className="flex items-center justify-between">
-                    <span className="text-sm-pixel text-pixel-yellow">
+                    <span className="text-sm-pixel text-pixel-pink">
                       {vote.judgeName}
                     </span>
                     <motion.span
@@ -43,7 +43,7 @@ export const JudgePanel = ({ votes }: JudgePanelProps) => {
                   </div>
 
                   {/* Reaction */}
-                  <div className="text-xs-pixel text-pixel-white bg-pixel-darker p-2 border border-pixel-blue">
+                  <div className="text-xs-pixel text-pixel-cream bg-pixel-darker p-2 border border-pixel-light-purple">
                     {vote.reaction}
                   </div>
 

@@ -69,7 +69,7 @@ export const AgentSprite = ({ agent, cellSize }: AgentSpriteProps) => {
 
       {/* Name Label */}
       <div
-        className="text-xs-pixel text-pixel-white text-center px-2 py-1 bg-pixel-dark/90 border border-pixel-blue whitespace-nowrap"
+        className="text-xs-pixel text-pixel-cream text-center px-2 py-1 bg-pixel-purple/90 border border-pixel-light-purple whitespace-nowrap"
         style={{ maxWidth: cellSize * 2 }}
       >
         {agent.name.length > 10 ? agent.name.slice(0, 10) + '...' : agent.name}

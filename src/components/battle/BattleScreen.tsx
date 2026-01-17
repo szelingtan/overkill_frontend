@@ -58,10 +58,10 @@ export const BattleScreen = () => {
       >
         {/* Battle Title */}
         <div className="text-center">
-          <PixelText variant="h2" shadow className="text-pixel-yellow mb-2">
+          <PixelText variant="h2" shadow className="text-pixel-hot-pink mb-2">
             BATTLE!
           </PixelText>
-          <PixelText variant="body" className="text-pixel-white">
+          <PixelText variant="body" className="text-pixel-cream">
             Turn {currentBattle.currentTurn + 1}
           </PixelText>
         </div>
@@ -70,7 +70,7 @@ export const BattleScreen = () => {
         <div className="grid grid-cols-3 gap-8 items-center">
           {/* Agent 1 */}
           <div className="space-y-4">
-            <PixelCard className="border-pixel-blue">
+            <PixelCard className="border-pixel-light-blue">
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <motion.div
@@ -79,7 +79,7 @@ export const BattleScreen = () => {
                     animate={{ scale: [1, 1.1, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   />
-                  <PixelText variant="body" className="text-pixel-white">
+                  <PixelText variant="body" className="text-pixel-cream">
                     {agent1.name}
                   </PixelText>
                 </div>
@@ -103,7 +103,7 @@ export const BattleScreen = () => {
               }}
               transition={{ duration: 1, repeat: Infinity }}
             >
-              <PixelText variant="h1" shadow className="text-pixel-red">
+              <PixelText variant="h1" shadow className="text-pixel-hot-pink">
                 VS
               </PixelText>
             </motion.div>
@@ -111,7 +111,7 @@ export const BattleScreen = () => {
 
           {/* Agent 2 */}
           <div className="space-y-4">
-            <PixelCard className="border-pixel-red">
+            <PixelCard className="border-pixel-pink">
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <motion.div
@@ -120,7 +120,7 @@ export const BattleScreen = () => {
                     animate={{ scale: [1, 1.1, 1] }}
                     transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
                   />
-                  <PixelText variant="body" className="text-pixel-white">
+                  <PixelText variant="body" className="text-pixel-cream">
                     {agent2.name}
                   </PixelText>
                 </div>

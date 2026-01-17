@@ -7,15 +7,21 @@ export default {
   theme: {
     extend: {
       colors: {
-        'pixel-dark': '#0f0f1e',
-        'pixel-darker': '#070710',
-        'pixel-blue': '#2d4a96',
-        'pixel-light-blue': '#5b8dd6',
-        'pixel-red': '#d84654',
-        'pixel-yellow': '#ffd93d',
-        'pixel-green': '#6bc96b',
-        'pixel-white': '#f5f5f5',
-        'pixel-gray': '#5a5a5a',
+        // Main palette from logo
+        'pixel-dark': '#3d2b54',        // Deep purple background (from logo)
+        'pixel-darker': '#3d2b54',      // Same as logo background
+        'pixel-purple': '#4a3563',      // Medium purple
+        'pixel-light-purple': '#d4b5ff', // Light lavender
+        'pixel-blue': '#7eb3ff',        // Light blue (main text)
+        'pixel-light-blue': '#a4d4ff',  // Lighter blue
+        'pixel-pink': '#ffb3d9',        // Pastel pink
+        'pixel-hot-pink': '#ff8dc7',    // Brighter pink
+        'pixel-cream': '#fff4d6',       // Cream/beige
+        'pixel-yellow': '#ffe7a3',      // Soft yellow
+        'pixel-red': '#ff6b9d',         // Softer red/pink
+        'pixel-green': '#a3ffb8',       // Pastel green
+        'pixel-white': '#f5f5f5',       // White
+        'pixel-gray': '#9b8fb5',        // Purple-gray
       },
       fontFamily: {
         'pixel': ['"Press Start 2P"', 'cursive'],

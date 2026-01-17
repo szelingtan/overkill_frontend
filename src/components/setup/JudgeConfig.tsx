@@ -60,7 +60,7 @@ export const JudgeConfig = ({ judges, onAdd, onRemove }: JudgeConfigProps) => {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-md-pixel text-pixel-yellow">
+      <h3 className="text-md-pixel text-pixel-pink">
         Select Judges ({judges.length})
       </h3>
 
@@ -83,17 +83,17 @@ export const JudgeConfig = ({ judges, onAdd, onRemove }: JudgeConfigProps) => {
               <PixelCard
                 className={`text-left cursor-pointer transition-all ${
                   selected
-                    ? 'border-pixel-yellow bg-pixel-blue/30'
-                    : 'hover:border-pixel-light-blue'
+                    ? 'border-pixel-pink bg-pixel-pink/20'
+                    : 'hover:border-pixel-light-purple'
                 }`}
               >
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-sm-pixel text-pixel-white">
+                    <h4 className="text-sm-pixel text-pixel-cream">
                       {template.name}
                     </h4>
                     {selected && (
-                      <span className="text-pixel-yellow text-sm-pixel">✓</span>
+                      <span className="text-pixel-pink text-sm-pixel">✓</span>
                     )}
                   </div>
                   <p className="text-xs-pixel text-pixel-gray">

@@ -26,7 +26,7 @@ export const ChoiceInput = ({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-md-pixel text-pixel-yellow">
+        <h3 className="text-md-pixel text-pixel-pink">
           Your Choices ({choices.length})
         </h3>
         <PixelButton onClick={handleAddChoice} size="sm" variant="secondary">
@@ -46,12 +46,12 @@ export const ChoiceInput = ({
             <PixelCard>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm-pixel text-pixel-white">
+                  <label className="text-sm-pixel text-pixel-cream">
                     Choice #{index + 1}
                   </label>
                   <button
                     onClick={() => onRemove(choice.id)}
-                    className="text-pixel-red hover:text-pixel-yellow text-sm-pixel"
+                    className="text-pixel-hot-pink hover:text-pixel-pink text-sm-pixel"
                   >
                     [X]
                   </button>
@@ -62,7 +62,7 @@ export const ChoiceInput = ({
                   value={choice.name || ''}
                   onChange={(e) => onUpdate(choice.id, { name: e.target.value })}
                   placeholder="Name (optional)"
-                  className="w-full bg-pixel-darker text-pixel-white border-2 border-pixel-blue p-2 text-sm-pixel font-pixel focus:border-pixel-light-blue outline-none"
+                  className="w-full bg-pixel-darker text-pixel-cream border-2 border-pixel-light-purple p-2 text-sm-pixel font-pixel focus:border-pixel-pink outline-none placeholder:text-pixel-gray"
                 />
 
                 <textarea
@@ -72,7 +72,7 @@ export const ChoiceInput = ({
                   }
                   placeholder="Describe this choice..."
                   rows={3}
-                  className="w-full bg-pixel-darker text-pixel-white border-2 border-pixel-blue p-2 text-sm-pixel font-pixel resize-none focus:border-pixel-light-blue outline-none"
+                  className="w-full bg-pixel-darker text-pixel-cream border-2 border-pixel-light-purple p-2 text-sm-pixel font-pixel resize-none focus:border-pixel-pink outline-none placeholder:text-pixel-gray"
                 />
               </div>
             </PixelCard>

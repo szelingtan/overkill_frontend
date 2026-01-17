@@ -38,11 +38,16 @@ export const VictoryScreen = () => {
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200, damping: 15 }}
         >
-          <PixelText variant="h1" shadow className="text-pixel-yellow">
+          <img
+            src="/overkill_logo.png"
+            alt="OVERKILL"
+            className="w-24 h-24 mx-auto mb-2"
+          />
+          <PixelText variant="h1" shadow className="text-pixel-blue">
             VICTORY!
           </PixelText>
 
-          <PixelCard className="border-pixel-yellow bg-pixel-yellow/20 inline-block">
+          <PixelCard className="border-pixel-pink bg-pixel-pink/20 inline-block">
             <div className="space-y-3">
               <div className="flex items-center gap-4 justify-center">
                 <motion.div
@@ -55,16 +60,16 @@ export const VictoryScreen = () => {
                   transition={{ duration: 2, repeat: Infinity }}
                 />
                 <div className="text-left">
-                  <PixelText variant="h2" className="text-pixel-yellow">
+                  <PixelText variant="h2" className="text-pixel-cream">
                     {winner.name}
                   </PixelText>
-                  <PixelText variant="body" className="text-pixel-white">
+                  <PixelText variant="body" className="text-pixel-blue">
                     The Ultimate Choice!
                   </PixelText>
                 </div>
               </div>
 
-              <div className="text-sm-pixel text-pixel-white max-w-lg">
+              <div className="text-sm-pixel text-pixel-cream max-w-lg">
                 {winner.description}
               </div>
             </div>
@@ -83,7 +88,7 @@ export const VictoryScreen = () => {
                 <PixelText variant="body" className="text-pixel-gray mb-1">
                   Total Battles
                 </PixelText>
-                <PixelText variant="h2" className="text-pixel-yellow">
+                <PixelText variant="h2" className="text-pixel-pink">
                   {battleHistory.length}
                 </PixelText>
               </div>
@@ -91,7 +96,7 @@ export const VictoryScreen = () => {
                 <PixelText variant="body" className="text-pixel-gray mb-1">
                   Contestants
                 </PixelText>
-                <PixelText variant="h2" className="text-pixel-yellow">
+                <PixelText variant="h2" className="text-pixel-blue">
                   {rankings.length}
                 </PixelText>
               </div>
@@ -113,7 +118,7 @@ export const VictoryScreen = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
         >
-          <PixelText variant="h2" className="text-pixel-yellow mb-4 text-center">
+          <PixelText variant="h2" className="text-pixel-pink mb-4 text-center">
             FINAL RANKINGS
           </PixelText>
           <RankingList rankings={rankings} />

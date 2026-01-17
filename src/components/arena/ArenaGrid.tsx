@@ -24,7 +24,7 @@ export const ArenaGrid = ({
   }
 
   return (
-    <div className="relative border-4 border-pixel-blue bg-pixel-dark shadow-pixel">
+    <div className="relative border-4 border-pixel-light-purple bg-pixel-purple/30 shadow-pixel">
       {/* Grid Background */}
       <div
         className="relative"
@@ -57,12 +57,12 @@ export const ArenaGrid = ({
 
       {/* Arena Title */}
       <motion.div
-        className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-pixel-blue border-4 border-pixel-light-blue px-6 py-2"
+        className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-pixel-purple border-4 border-pixel-pink px-6 py-2"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
       >
-        <span className="text-md-pixel text-pixel-yellow">BATTLE ARENA</span>
+        <span className="text-md-pixel text-pixel-cream">BATTLE ARENA</span>
       </motion.div>
     </div>
   )

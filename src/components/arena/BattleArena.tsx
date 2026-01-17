@@ -43,10 +43,12 @@ export const BattleArena = () => {
       >
         {/* Header */}
         <div className="text-center mb-8">
-          <PixelText variant="h1" shadow className="text-pixel-yellow mb-2">
-            OVERKILL
-          </PixelText>
-          <PixelText variant="body" className="text-pixel-white">
+          <img
+            src="/overkill_logo.png"
+            alt="OVERKILL"
+            className="w-32 h-32 mx-auto mb-4"
+          />
+          <PixelText variant="body" className="text-pixel-cream">
             Let the battle begin!
           </PixelText>
         </div>

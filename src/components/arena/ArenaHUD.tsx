@@ -15,7 +15,7 @@ export const ArenaHUD = ({ agents }: ArenaHUDProps) => {
       {/* Stats Panel */}
       <PixelCard>
         <div className="space-y-3">
-          <PixelText variant="h3" className="text-pixel-yellow">
+          <PixelText variant="h3" className="text-pixel-pink">
             Battle Stats
           </PixelText>
           <div className="grid grid-cols-2 gap-4 text-sm-pixel">
@@ -34,7 +34,7 @@ export const ArenaHUD = ({ agents }: ArenaHUDProps) => {
       {/* Agents List */}
       <PixelCard>
         <div className="space-y-3">
-          <PixelText variant="h3" className="text-pixel-yellow">
+          <PixelText variant="h3" className="text-pixel-pink">
             Gladiators
           </PixelText>
           <div className="space-y-2 max-h-96 overflow-y-auto">
@@ -45,8 +45,8 @@ export const ArenaHUD = ({ agents }: ArenaHUDProps) => {
                   agent.status === 'eliminated'
                     ? 'border-pixel-gray opacity-50'
                     : agent.status === 'battling'
-                    ? 'border-pixel-red bg-pixel-red/10'
-                    : 'border-pixel-blue'
+                    ? 'border-pixel-hot-pink bg-pixel-hot-pink/10'
+                    : 'border-pixel-light-purple'
                 }`}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -57,11 +57,11 @@ export const ArenaHUD = ({ agents }: ArenaHUDProps) => {
                       className="w-4 h-4 border-2 border-black"
                       style={{ backgroundColor: agent.color }}
                     />
-                    <span className="text-sm-pixel text-pixel-white flex-1">
+                    <span className="text-sm-pixel text-pixel-cream flex-1">
                       {agent.name}
                     </span>
                     {agent.status === 'battling' && (
-                      <span className="text-xs-pixel text-pixel-red">
+                      <span className="text-xs-pixel text-pixel-hot-pink">
                         FIGHTING!
                       </span>
                     )}
