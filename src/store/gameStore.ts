@@ -1,9 +1,10 @@
 import { create } from 'zustand'
-import type { GameState, Choice, Judge, Agent, Battle, Encounter } from './types'
+import type { GameState, Choice, JudgeAgent, ChoiceAgent, Battle, Encounter } from './types'
 
 const initialState = {
-  background: '',
+  context: '',
   choices: [],
+  choiceAgents: [],
   judges: [],
   sessionId: null,
   connected: false,
@@ -26,7 +27,7 @@ export const useGameStore = create<GameState>((set) => ({
   // Setup actions
   setSetupData: (data) =>
     set((state) => ({
-      background: data.background ?? state.background,
+      context: data.context ?? state.context,
       choices: data.choices ?? state.choices,
       judges: data.judges ?? state.judges,
     })),
@@ -48,7 +49,7 @@ export const useGameStore = create<GameState>((set) => ({
       ),
     })),
 
-  addJudge: (judge: Judge) =>
+  addJudge: (judge: JudgeAgent) =>
     set((state) => ({
       judges: [...state.judges, judge],
     })),
@@ -58,7 +59,7 @@ export const useGameStore = create<GameState>((set) => ({
       judges: state.judges.filter((j) => j.id !== id),
     })),
 
-  updateJudge: (id: string, data: Partial<Judge>) =>
+  updateJudge: (id: string, data: Partial<JudgeAgent>) =>
     set((state) => ({
       judges: state.judges.map((j) =>
         j.id === id ? { ...j, ...data } : j
@@ -71,14 +72,14 @@ export const useGameStore = create<GameState>((set) => ({
   setCurrentScreen: (screen) => set({ currentScreen: screen }),
 
   // Agent actions
-  updateAgent: (id: string, data: Partial<Agent>) =>
+  updateChoiceAgent: (id: string, data: Partial<ChoiceAgent>) =>
     set((state) => ({
       agents: state.agents.map((a) =>
         a.id === id ? { ...a, ...data } : a
       ),
     })),
 
-  setAgents: (agents: Agent[]) => set({ agents }),
+  setChoiceAgents: (agents: ChoiceAgent[]) => set({ agents }),
 
   addEncounter: (encounter: Encounter) =>
     set((state) => ({
@@ -99,7 +100,7 @@ export const useGameStore = create<GameState>((set) => ({
         : null,
     })),
 
-  endBattle: (winner: Agent, loser: Agent) =>
+  endBattle: (winner: ChoiceAgent, loser: ChoiceAgent) =>
     set((state) => ({
       currentBattle: state.currentBattle
         ? { ...state.currentBattle, winner: winner.id, loser: loser.id, status: 'ended' }
@@ -111,14 +112,14 @@ export const useGameStore = create<GameState>((set) => ({
     })),
 
   // Results actions
-  setWinner: (winner: Agent) =>
+  setWinner: (winner: ChoiceAgent) =>
     set({
       winner,
       isGameOver: true,
       currentScreen: 'victory',
     }),
 
-  setRankings: (rankings: Agent[]) => set({ rankings }),
+  setRankings: (rankings: ChoiceAgent[]) => set({ rankings }),
 
   // UI actions
   setError: (error: string | null) => set({ error }),

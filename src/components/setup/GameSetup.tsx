@@ -10,7 +10,7 @@ import { JudgeConfig } from './JudgeConfig'
 export const GameSetup = () => {
   const navigate = useNavigate()
   const {
-    background,
+    context,
     choices,
     judges,
     setSetupData,
@@ -26,16 +26,15 @@ export const GameSetup = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const handleBackgroundChange = (value: string) => {
-    setSetupData({ background: value })
+  const handleContextChange = (value: string) => {
+    setSetupData({ context: value })
   }
 
   const canStartGame = () => {
     return (
       choices.length >= 2 &&
-      choices.every((c) => c.description.trim() !== '') &&
       judges.length >= 1 &&
-      background.trim() !== ''
+      context.trim() !== ''
     )
   }
 
@@ -48,7 +47,7 @@ export const GameSetup = () => {
     try {
       // Create game session
       const response = await api.createGame({
-        background,
+        context,
         choices,
         judges,
       })
@@ -113,8 +112,8 @@ export const GameSetup = () => {
               Decision Background
             </label>
             <textarea
-              value={background}
-              onChange={(e) => handleBackgroundChange(e.target.value)}
+              value={context}
+              onChange={(e) => handleContextChange(e.target.value)}
               placeholder="What are you trying to decide? Provide context..."
               rows={4}
               className="w-full bg-pixel-darker text-pixel-cream border-2 border-pixel-light-purple p-3 text-sm-pixel font-pixel resize-none focus:border-pixel-pink outline-none placeholder:text-pixel-gray"
@@ -186,10 +185,8 @@ export const GameSetup = () => {
           >
             <PixelText variant="small" className="text-pixel-gray">
               {choices.length < 2 && '⚠ Add at least 2 choices\n'}
-              {choices.some((c) => !c.description.trim()) &&
-                '⚠ All choices need descriptions\n'}
               {judges.length < 1 && '⚠ Select at least 1 judge\n'}
-              {!background.trim() && '⚠ Provide decision background\n'}
+              {!context.trim() && '⚠ Provide decision background\n'}
             </PixelText>
           </motion.div>
         )}

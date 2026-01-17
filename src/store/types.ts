@@ -1,13 +1,10 @@
-// Position in the arena grid
 export interface Position {
   x: number
   y: number
 }
 
-// Judge types and configuration
 export type JudgePersonality = 'funny' | 'sarcastic' | 'nerd' | 'serious' | 'custom'
-
-export interface Judge {
+export interface JudgeAgent {
   id: string
   name: string
   personality: JudgePersonality
@@ -15,32 +12,35 @@ export interface Judge {
   avatar?: string
 }
 
-// Choice/Agent types
 export interface Choice {
   id: string
-  description: string
-  name?: string
+  name: string
+  description?: string
 }
 
-export interface Agent {
+export interface ChoiceAgent {
+  // identity
   id: string
-  choiceId: string
   name: string
-  description: string
-  position: Position
-  hp: number
-  maxHp: number
-  globalHp: number
-  maxGlobalHp: number
-  status: 'active' | 'battling' | 'eliminated'
+  choice: Choice
   color: string
   sprite?: string
+  
+  // per-battle stats
+  currentBattleHp: number
+  maxBattleHp: number
+
+  // overall stats
+  currentGlobalHp: number
+  maxGlobalHp: number
+  position: Position
+  status: 'active' | 'battling' | 'eliminated'
 }
 
 // Battle types
 export interface BattleArgument {
   agentId: string
-  agentName: string
+  opponentId: string
   argument: string
   timestamp: number
 }
@@ -48,23 +48,23 @@ export interface BattleArgument {
 export interface JudgeVote {
   judgeId: string
   judgeName: string
-  votedFor: string
+  rating: number
   reaction: string
   reasoning: string
 }
 
 export interface BattleTurn {
   turnNumber: number
-  arguments: BattleArgument[]
+  argument1: BattleArgument
+  argument2: BattleArgument
   votes: JudgeVote[]
   damage: number
-  loser: string
 }
 
 export interface Battle {
   id: string
-  agent1: Agent
-  agent2: Agent
+  agent1: ChoiceAgent
+  agent2: ChoiceAgent
   turns: BattleTurn[]
   currentTurn: number
   winner?: string
@@ -103,7 +103,8 @@ export interface WSEvent<T = unknown> {
 // Specific event data types
 export interface GameStartedData {
   sessionId: string
-  agents: Agent[]
+  agents: ChoiceAgent[]
+  judges: JudgeAgent[]
   arenaSize: { width: number; height: number }
 }
 
@@ -114,13 +115,13 @@ export interface AgentMovedData {
 }
 
 export interface AgentSpawnedData {
-  agent: Agent
+  agent: ChoiceAgent
 }
 
 export interface EncounterStartedData {
   encounter: Encounter
-  agent1: Agent
-  agent2: Agent
+  agent1: ChoiceAgent
+  agent2: ChoiceAgent
 }
 
 export interface BattleTurnData {
@@ -137,8 +138,8 @@ export interface BattleDamageData {
 
 export interface BattleEndedData {
   battleId: string
-  winner: Agent
-  loser: Agent
+  winner: ChoiceAgent
+  loser: ChoiceAgent
 }
 
 export interface AgentEliminatedData {
@@ -147,16 +148,16 @@ export interface AgentEliminatedData {
 }
 
 export interface GameFinishedData {
-  winner: Agent
-  rankings: Agent[]
+  winner: ChoiceAgent
+  rankings: ChoiceAgent[]
   totalBattles: number
 }
 
 // Game setup types
 export interface GameSetupData {
-  background: string
+  judges: JudgeAgent[]
   choices: Choice[]
-  judges: Judge[]
+  context: string
 }
 
 // Animation types
@@ -171,16 +172,17 @@ export interface DamageAnimation {
 // Game state types
 export interface GameState {
   // Setup
-  background: string
-  choices: Choice[]
-  judges: Judge[]
+  context: string
+  choices: Choice[] // before backend setup of agents
+  choiceAgents: ChoiceAgent[] // after backend setup
+  judges: JudgeAgent[]
 
   // Session
   sessionId: string | null
   connected: boolean
 
   // Arena
-  agents: Agent[]
+  agents: ChoiceAgent[]
   arenaSize: { width: number; height: number }
   encounters: Encounter[]
 
@@ -189,8 +191,8 @@ export interface GameState {
   battleHistory: Battle[]
 
   // Results
-  winner: Agent | null
-  rankings: Agent[]
+  winner: ChoiceAgent | null
+  rankings: ChoiceAgent[]
   isGameOver: boolean
 
   // UI State
@@ -198,29 +200,33 @@ export interface GameState {
   isLoading: boolean
   error: string | null
 
-  // Actions
+  // Initialisation
   setSetupData: (data: Partial<GameSetupData>) => void
+
+  // just name and description here - need backend to generate personality
   addChoice: (choice: Choice) => void
   removeChoice: (id: string) => void
   updateChoice: (id: string, data: Partial<Choice>) => void
-  addJudge: (judge: Judge) => void
+
+  // can use full judge agent descriptions here since they are preset
+  addJudge: (judge: JudgeAgent) => void
   removeJudge: (id: string) => void
-  updateJudge: (id: string, data: Partial<Judge>) => void
+  updateJudge: (id: string, data: Partial<JudgeAgent>) => void
 
   setSessionId: (id: string) => void
   setConnected: (connected: boolean) => void
   setCurrentScreen: (screen: 'setup' | 'arena' | 'battle' | 'victory') => void
 
-  updateAgent: (id: string, data: Partial<Agent>) => void
-  setAgents: (agents: Agent[]) => void
+  updateChoiceAgent: (id: string, data: Partial<ChoiceAgent>) => void
+  setChoiceAgents: (agents: ChoiceAgent[]) => void
   addEncounter: (encounter: Encounter) => void
 
   startBattle: (battle: Battle) => void
   updateBattle: (data: Partial<Battle>) => void
-  endBattle: (winner: Agent, loser: Agent) => void
+  endBattle: (winner: ChoiceAgent, loser: ChoiceAgent) => void
 
-  setWinner: (winner: Agent) => void
-  setRankings: (rankings: Agent[]) => void
+  setWinner: (winner: ChoiceAgent) => void
+  setRankings: (rankings: ChoiceAgent[]) => void
 
   setError: (error: string | null) => void
   setLoading: (loading: boolean) => void

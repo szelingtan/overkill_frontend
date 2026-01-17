@@ -17,8 +17,8 @@ export const useWebSocket = (sessionId: string | null) => {
   const wsRef = useRef<WebSocketService | null>(null)
   const {
     setConnected,
-    setAgents,
-    updateAgent,
+    setChoiceAgents,
+    updateChoiceAgent,
     addEncounter,
     startBattle,
     updateBattle,
@@ -49,18 +49,18 @@ export const useWebSocket = (sessionId: string | null) => {
     // Register event handlers
     ws.on('game:started', (data) => {
       const gameData = data as GameStartedData
-      setAgents(gameData.agents)
+      setChoiceAgents(gameData.agents)
       console.log('Game started with agents:', gameData.agents)
     })
 
     ws.on('agent:moved', (data) => {
       const moveData = data as AgentMovedData
-      updateAgent(moveData.agentId, { position: moveData.to })
+      updateChoiceAgent(moveData.agentId, { position: moveData.to })
     })
 
     ws.on('agent:spawned', (data) => {
       const spawnData = data as AgentSpawnedData
-      setAgents(useGameStore.getState().agents.concat(spawnData.agent))
+      setChoiceAgents(useGameStore.getState().agents.concat(spawnData.agent))
     })
 
     ws.on('encounter:started', (data) => {
@@ -68,8 +68,8 @@ export const useWebSocket = (sessionId: string | null) => {
       addEncounter(encounterData.encounter)
 
       // Update agents to battling status
-      updateAgent(encounterData.agent1.id, { status: 'battling' })
-      updateAgent(encounterData.agent2.id, { status: 'battling' })
+      updateChoiceAgent(encounterData.agent1.id, { status: 'battling' })
+      updateChoiceAgent(encounterData.agent2.id, { status: 'battling' })
 
       // Start battle
       startBattle({
@@ -96,25 +96,27 @@ export const useWebSocket = (sessionId: string | null) => {
 
     ws.on('battle:damage', (data) => {
       const damageData = data as BattleDamageData
-      updateAgent(damageData.agentId, { hp: damageData.newHp })
+      updateChoiceAgent(damageData.agentId, { currentBattleHp: damageData.newHp })
     })
 
     ws.on('battle:ended', (data) => {
       const endData = data as BattleEndedData
 
       // Update agent statuses
-      updateAgent(endData.winner.id, { status: 'active', globalHp: endData.winner.globalHp })
-      updateAgent(endData.loser.id, {
-        status: endData.loser.globalHp <= 0 ? 'eliminated' : 'active',
-        globalHp: endData.loser.globalHp,
+      updateChoiceAgent(endData.winner.id, { status: 'active', currentBattleHp: endData.winner.maxBattleHp })
+      updateChoiceAgent(endData.loser.id, {
+        status: endData.loser.currentGlobalHp <= 0 ? 'eliminated' : 'active',
+        currentGlobalHp: Math.max(endData.loser.currentGlobalHp, 0),
+        currentBattleHp: endData.loser.maxBattleHp
       })
 
+      // Reset global battle data
       endBattle(endData.winner, endData.loser)
     })
 
     ws.on('agent:eliminated', (data) => {
       const elimData = data as AgentEliminatedData
-      updateAgent(elimData.agentId, { status: 'eliminated', hp: 0, globalHp: 0 })
+      updateChoiceAgent(elimData.agentId, { status: 'eliminated', currentBattleHp: 0, currentGlobalHp: 0 })
     })
 
     ws.on('game:finished', (data) => {
@@ -133,7 +135,7 @@ export const useWebSocket = (sessionId: string | null) => {
       ws.disconnect()
       setConnected(false)
     }
-  }, [sessionId, setConnected, setAgents, updateAgent, addEncounter, startBattle, updateBattle, endBattle, setWinner, setRankings, setError])
+  }, [sessionId, setConnected, setChoiceAgents, updateChoiceAgent, addEncounter, startBattle, updateBattle, endBattle, setWinner, setRankings, setError])
 
   const sendMessage = <T,>(type: string, data: T) => {
     if (wsRef.current) {

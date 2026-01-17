@@ -18,6 +18,7 @@ export const ChoiceInput = ({
   const handleAddChoice = () => {
     const newChoice: Choice = {
       id: `choice-${Date.now()}`,
+      name: '',
       description: '',
     }
     onAdd(newChoice)
@@ -61,7 +62,7 @@ export const ChoiceInput = ({
                   type="text"
                   value={choice.name || ''}
                   onChange={(e) => onUpdate(choice.id, { name: e.target.value })}
-                  placeholder="Name (optional)"
+                  placeholder="Name"
                   className="w-full bg-pixel-darker text-pixel-cream border-2 border-pixel-light-purple p-2 text-sm-pixel font-pixel focus:border-pixel-pink outline-none placeholder:text-pixel-gray"
                 />
 
@@ -70,7 +71,7 @@ export const ChoiceInput = ({
                   onChange={(e) =>
                     onUpdate(choice.id, { description: e.target.value })
                   }
-                  placeholder="Describe this choice..."
+                  placeholder="Describe this choice... (optional)"
                   rows={3}
                   className="w-full bg-pixel-darker text-pixel-cream border-2 border-pixel-light-purple p-2 text-sm-pixel font-pixel resize-none focus:border-pixel-pink outline-none placeholder:text-pixel-gray"
                 />
