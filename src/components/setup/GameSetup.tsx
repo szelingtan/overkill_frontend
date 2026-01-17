@@ -33,7 +33,6 @@ export const GameSetup = () => {
   const canStartGame = () => {
     return (
       choices.length >= 2 &&
-      choices.every((c) => c.description.trim() !== '') &&
       judges.length >= 1 &&
       background.trim() !== ''
     )
