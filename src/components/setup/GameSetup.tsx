@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useGameStore } from '../../store/gameStore'
@@ -21,10 +21,19 @@ export const GameSetup = () => {
     removeJudge,
     setSessionId,
     setCurrentScreen,
+    sessionId,
+    currentScreen,
   } = useGameStore()
 
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Navigate to arena when session is created and screen is set to arena
+  useEffect(() => {
+    if (sessionId && currentScreen === 'arena') {
+      navigate('/arena')
+    }
+  }, [sessionId, currentScreen, navigate])
 
   const handleContextChange = (value: string) => {
     setSetupData({ context: value })
@@ -52,12 +61,13 @@ export const GameSetup = () => {
         judges,
       })
 
-      // Store session ID
-      setSessionId(response.sessionId)
+      console.log(response);
+
+      // Store session ID and set screen
+      setSessionId(response.game_id)
       setCurrentScreen('arena')
 
-      // Navigate to arena
-      navigate('/arena')
+      // Navigation will happen via useEffect when state updates
     } catch (err) {
       console.error('Failed to create game:', err)
       setError('Failed to start game. Make sure the backend is running.')

@@ -10,12 +10,12 @@ export const BattleArena = () => {
   const navigate = useNavigate()
   const { agents, arenaSize, connected, currentScreen } = useGameStore()
 
-  useEffect(() => {
-    // Navigate to battle screen when battle starts
-    if (currentScreen === 'battle') {
-      navigate('/battle')
-    }
-  }, [currentScreen, navigate])
+  // useEffect(() => {
+  //   // Navigate to battle screen when battle starts
+  //   if (currentScreen === 'battle') {
+  //     navigate('/battle')
+  //   }
+  // }, [currentScreen, navigate])
 
   if (!connected) {
     return (

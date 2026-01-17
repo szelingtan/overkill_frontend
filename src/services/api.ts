@@ -3,9 +3,45 @@ import type { GameSetupData } from '../store/types'
 
 const API_BASE_URL = 'http://localhost:8000/api'
 
+export interface ChoiceAgentInitResponse {
+  // identity
+  id: string
+  game_id: string
+  name: string
+  catchphrase: string
+  personality: string
+  fighting_style: string
+  avatar_emoji: string
+
+  // stats
+  battle_hp: number
+  max_battle_hp: number
+  global_hp: number
+  max_global_hp: number
+
+  // meta-stats
+  losses: number
+}
+
+export interface JudgeAgentInitResponse {
+  // identity
+  id: string
+  game_id: string
+  avatar_emoji: string
+  name: string
+  bias_keywords: string[]
+  custom_prompt: string | null
+  personality: string
+  personality_type: string
+  scoring_style: string
+  is_custom?: boolean
+}
+
 export interface CreateGameResponse {
-  sessionId: string
-  message: string
+  game_id: string
+  status: string
+  agents: ChoiceAgentInitResponse[]
+  judges: JudgeAgentInitResponse[]
 }
 
 export const api = {
