@@ -61,8 +61,6 @@ export const GameSetup = () => {
         judges,
       })
 
-      console.log(response);
-
       // Store session ID and set screen
       setSessionId(response.game_id)
       setCurrentScreen('arena')

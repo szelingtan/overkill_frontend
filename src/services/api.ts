@@ -46,7 +46,6 @@ export interface CreateGameResponse {
 
 export const api = {
   async createGame(setupData: GameSetupData): Promise<CreateGameResponse> {
-    console.log(flattenGameSetupData(setupData));
     const response = await fetch(`${API_BASE_URL}/game/create`, {
       method: 'POST',
       headers: {

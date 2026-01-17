@@ -31,7 +31,7 @@ export const useWebSocket = (sessionId: string | null) => {
   useEffect(() => {
     if (!sessionId) return
 
-    const wsUrl = `ws://localhost:8000/ws/game/${sessionId}`
+    const wsUrl = `ws://localhost:8000/ws/${sessionId}`
     const ws = new WebSocketService(wsUrl)
     wsRef.current = ws
 
