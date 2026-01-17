@@ -61,8 +61,8 @@ export const api = {
     return response.json()
   },
 
-  async startGame(sessionId: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/game/${sessionId}/start`, {
+  async startGame(gameId: string): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/game/${gameId}/start`, {
       method: 'POST',
     })
 
@@ -71,8 +71,8 @@ export const api = {
     }
   },
 
-  async getGameState(sessionId: string): Promise<unknown> {
-    const response = await fetch(`${API_BASE_URL}/game/${sessionId}/state`)
+  async getGameState(gameId: string): Promise<unknown> {
+    const response = await fetch(`${API_BASE_URL}/game/${gameId}/state`)
 
     if (!response.ok) {
       throw new Error(`Failed to get game state: ${response.statusText}`)

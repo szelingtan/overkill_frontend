@@ -61,13 +61,17 @@ export const GameSetup = () => {
         judges,
       })
 
-      // Store session ID and set screen
+      // Store session ID
       setSessionId(response.game_id)
+
+      // Start the game
+      await api.startGame(response.game_id)
+
+      // Set screen to arena (navigation will happen via useEffect)
       setCurrentScreen('arena')
 
-      // Navigation will happen via useEffect when state updates
     } catch (err) {
-      console.error('Failed to create game:', err)
+      console.error('Failed to create or start game:', err)
       setError('Failed to start game. Make sure the backend is running.')
     } finally {
       setIsLoading(false)
