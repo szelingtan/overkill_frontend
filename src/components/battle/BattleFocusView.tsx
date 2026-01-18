@@ -8,6 +8,7 @@ import { JudgePanel } from './JudgePanel'
 import { DamageAnimation } from './DamageAnimation'
 import { BattleLog } from './BattleLog'
 import type { Battle } from '../../store/types'
+import { getChoiceName } from '@/util/flatten'
 
 export const BattleFocusView = () => {
   const navigate = useNavigate()
@@ -126,7 +127,7 @@ export const BattleFocusView = () => {
           >
             <div className="text-6xl mb-4">{winner.avatarEmoji || '🎭'}</div>
             <PixelText variant="h2" className="text-pixel-cream mb-2">
-              {winner.name}
+              {getChoiceName(winner.name)}
             </PixelText>
             <PixelText variant="h3" className="text-pixel-green">
               VICTORIOUS!
@@ -221,7 +222,7 @@ export const BattleFocusView = () => {
                 </motion.div>
                 <div className="flex-1">
                   <PixelText variant="h3" className="text-pixel-cream">
-                    {agent1.name}
+                    {getChoiceName(agent1.name)}
                   </PixelText>
                   {agent1.catchphrase && (
                     <PixelText variant="small" className="text-pixel-blue italic">
@@ -289,7 +290,7 @@ export const BattleFocusView = () => {
                 </motion.div>
                 <div className="flex-1">
                   <PixelText variant="h3" className="text-pixel-cream">
-                    {agent2.name}
+                    {getChoiceName(agent2.name)}
                   </PixelText>
                   {agent2.catchphrase && (
                     <PixelText variant="small" className="text-pixel-pink italic">
@@ -351,7 +352,7 @@ export const BattleFocusView = () => {
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-xl">{agent1.avatarEmoji || '🎭'}</span>
                       <PixelText variant="body" className="text-pixel-blue">
-                        {agent1.name}
+                        {getChoiceName(agent1.name)}
                       </PixelText>
                     </div>
                     <ArgumentDisplay
@@ -365,7 +366,7 @@ export const BattleFocusView = () => {
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-xl">{agent2.avatarEmoji || '🎭'}</span>
                       <PixelText variant="body" className="text-pixel-pink">
-                        {agent2.name}
+                        {getChoiceName(agent2.name)}
                       </PixelText>
                     </div>
                     <ArgumentDisplay
@@ -423,10 +424,10 @@ export const BattleFocusView = () => {
           >
             <PixelCard className="border-pixel-green bg-pixel-green/10 text-center">
               <PixelText variant="h2" className="text-pixel-green mb-2">
-                {battle.winner === agent1.id ? agent1.name : agent2.name} WINS!
+                {getChoiceName(battle.winner === agent1.id ? agent1.name : agent2.name)} WINS!
               </PixelText>
               <PixelText variant="body" className="text-pixel-cream">
-                {battle.loser === agent1.id ? agent1.name : agent2.name} takes 25 global HP damage!
+                {getChoiceName(battle.loser === agent1.id ? agent1.name : agent2.name)} takes 25 global HP damage!
               </PixelText>
             </PixelCard>
           </motion.div>

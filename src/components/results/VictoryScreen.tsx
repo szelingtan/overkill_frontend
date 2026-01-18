@@ -4,6 +4,7 @@ import { useGameStore } from '../../store/gameStore'
 import { PixelText, PixelButton, PixelCard } from '../common'
 import { RankingList } from './RankingList'
 import { HighlightReel } from './HighlightReel'
+import { getChoiceName } from '@/util/flatten'
 
 export const VictoryScreen = () => {
   const navigate = useNavigate()
@@ -105,7 +106,7 @@ export const VictoryScreen = () => {
                 </motion.div>
                 <div className="text-left">
                   <PixelText variant="h2" className="text-pixel-cream">
-                    {winner.name}
+                    {getChoiceName(winner.name)}
                   </PixelText>
                   <PixelText variant="body" className="text-pixel-blue">
                     The Ultimate Choice!

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import type { ChoiceAgent } from '../../store/types'
 import { PixelText, HPBar } from '../common'
+import { getChoiceName } from '@/util/flatten'
 
 interface AgentRevealCardProps {
   agent: ChoiceAgent
@@ -48,7 +49,7 @@ export const AgentRevealCard = ({ agent, index, isRevealed }: AgentRevealCardPro
               </motion.div>
               <div className="flex-1 min-w-0">
                 <PixelText variant="h3" className="text-pixel-cream truncate">
-                  {agent.name}
+                  {getChoiceName(agent.name)}
                 </PixelText>
                 <PixelText variant="small" className="text-pixel-blue">
                   {agent.choice?.description || 'Ready to battle!'}

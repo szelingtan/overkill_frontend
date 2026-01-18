@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { PixelCard, HPBar } from '../common'
 import type { ChoiceAgent } from '../../store/types'
+import { getChoiceName } from '@/util/flatten'
 
 interface RankingListProps {
   rankings: ChoiceAgent[]
@@ -44,7 +45,7 @@ export const RankingList = ({ rankings }: RankingListProps) => {
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">{agent.avatarEmoji || '🎭'}</span>
                   <span className="text-md-pixel text-pixel-cream">
-                    {agent.name}
+                    {getChoiceName(agent.name)}
                   </span>
                   {agent.status === 'eliminated' && (
                     <span className="text-xs text-pixel-gray">(Eliminated)</span>

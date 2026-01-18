@@ -6,6 +6,7 @@ import { api } from '../../services/api'
 import { PixelText, PixelButton, LoadingSpinner } from '../common'
 import { AgentRevealCard } from './AgentRevealCard'
 import { JudgeRevealCard } from './JudgeRevealCard'
+import { getChoiceName } from '@/util/flatten'
 
 export const AgentLoadingScreen = () => {
   const navigate = useNavigate()
@@ -233,7 +234,7 @@ export const AgentLoadingScreen = () => {
                   <div key={agent.id} className="text-center">
                     <div className="text-2xl">{agent.avatarEmoji || '🎭'}</div>
                     <PixelText variant="small" className="text-pixel-cream truncate">
-                      {agent.name}
+                      {getChoiceName(agent.name)}
                     </PixelText>
                   </div>
                 ))}

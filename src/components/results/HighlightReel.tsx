@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { PixelCard, PixelText } from '../common'
 import type { Battle } from '../../store/types'
+import { getChoiceName } from '@/util/flatten'
 
 interface HighlightReelProps {
   battles: Battle[]
@@ -12,9 +13,9 @@ export const HighlightReel = ({ battles }: HighlightReelProps) => {
     .flatMap((battle) =>
       battle.turns.map((turn) => ({
         battleId: battle.id,
-        agent1Name: battle.agent1.name,
+        agent1Name: getChoiceName(battle.agent1.name),
         agent1Emoji: battle.agent1.avatarEmoji,
-        agent2Name: battle.agent2.name,
+        agent2Name: getChoiceName(battle.agent2.name),
         agent2Emoji: battle.agent2.avatarEmoji,
         winnerName: turn.winnerName,
         loserName: turn.loserName,
