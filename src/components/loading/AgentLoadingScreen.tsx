@@ -23,6 +23,7 @@ export const AgentLoadingScreen = () => {
   const [revealedJudges, setRevealedJudges] = useState<Set<number>>(new Set())
   const [isStarting, setIsStarting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [countdown, setCountdown] = useState<number>(3)
   const isNavigatingRef = useRef(false) // Synchronous guard against rapid clicks
 
   // Redirect if no session (check both Zustand and sessionStorage)
@@ -106,6 +107,16 @@ export const AgentLoadingScreen = () => {
       }
     }
   }, [phase, judges.length])
+
+  // Countdown timer for "Enter Arena" button
+  useEffect(() => {
+    if (phase === 'ready' && countdown > 0) {
+      const timer = setTimeout(() => {
+        setCountdown(countdown - 1)
+      }, 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [phase, countdown])
 
   const handleEnterArena = async () => {
     // Synchronous guard - refs update immediately, preventing rapid clicks
@@ -321,26 +332,43 @@ export const AgentLoadingScreen = () => {
 
               {isStarting ? (
                 <LoadingSpinner text="ENTERING ARENA..." />
+              ) : countdown > 0 ? (
+                <motion.div
+                  key={countdown}
+                  initial={{ scale: 1.5, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="inline-block"
+                >
+                  <PixelText variant="h1" shadow className="text-pixel-hot-pink">
+                    {countdown}
+                  </PixelText>
+                </motion.div>
               ) : (
                 <motion.div
-                  animate={{
-                    boxShadow: [
-                      '0 0 20px rgba(126, 179, 255, 0.5)',
-                      '0 0 40px rgba(255, 141, 199, 0.8)',
-                      '0 0 20px rgba(126, 179, 255, 0.5)',
-                    ]
-                  }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                  className="inline-block rounded-lg"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ type: 'spring', stiffness: 200 }}
                 >
-                  <PixelButton
-                    onClick={handleEnterArena}
-                    size="lg"
-                    variant="primary"
-                    className="px-12"
+                  <motion.div
+                    animate={{
+                      boxShadow: [
+                        '0 0 20px rgba(126, 179, 255, 0.5)',
+                        '0 0 40px rgba(255, 141, 199, 0.8)',
+                        '0 0 20px rgba(126, 179, 255, 0.5)',
+                      ]
+                    }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                    className="inline-block rounded-lg"
                   >
-                    ENTER THE ARENA
-                  </PixelButton>
+                    <PixelButton
+                      onClick={handleEnterArena}
+                      size="lg"
+                      variant="primary"
+                      className="px-12"
+                    >
+                      ENTER THE ARENA
+                    </PixelButton>
+                  </motion.div>
                 </motion.div>
               )}
             </motion.div>

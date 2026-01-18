@@ -68,9 +68,8 @@ export const HighlightReel = ({ battles }: HighlightReelProps) => {
                 {/* Show the winning argument */}
                 {highlight.argument1 && (
                   <div className="text-xs-pixel text-pixel-cream bg-pixel-darker p-2 border border-pixel-light-purple">
-                    <span className="text-pixel-blue">{highlight.argument1.agentName}:</span>{' '}
-                    "{highlight.argument1.argument.slice(0, 150)}
-                    {highlight.argument1.argument.length > 150 ? '...' : ''}"
+                    <span className="text-pixel-blue">{getChoiceName(highlight.argument1.agentName)}:</span>{' '}
+                    "{highlight.argument1.argument}"
                   </div>
                 )}
 
