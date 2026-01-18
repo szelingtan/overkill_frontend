@@ -22,5 +22,7 @@ export function flattenGameSetupData(data: GameSetupData) {
 }
 
 export function getChoiceName(choiceStr: string): string {
-    return choiceStr.split(', Description: ')[0].trim().split('Choice: ')[1].trim();
+    if (!choiceStr) return '';
+    const parts = choiceStr.split(', Description: ')[0].trim().split('Choice: ');
+    return parts.length > 1 ? parts[1].trim() : choiceStr;
 }

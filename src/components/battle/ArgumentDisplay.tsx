@@ -1,10 +1,25 @@
 import { motion } from 'framer-motion'
 import { PixelCard } from '../common'
 import type { BattleArgument } from '../../store/types'
+import { getChoiceName } from '@/util/flatten'
 
 interface ArgumentDisplayProps {
   argument: BattleArgument
   side: 'left' | 'right'
+}
+
+// Helper to extract clean argument text without Choice/Description prefixes
+const cleanArgumentText = (text: string): string => {
+  // Remove "Choice: [name], Description: [text]" and just return [text]
+  const descMatch = text.match(/Description:\s*(.+)$/s)
+  if (descMatch) return descMatch[1].trim()
+  
+  // If only "Choice: [name]" exists, return [name]
+  const choiceMatch = text.match(/Choice:\s*(.+)$/s)
+  if (choiceMatch) return choiceMatch[1].trim()
+  
+  // Fallback: return original text if no pattern matches
+  return text
 }
 
 export const ArgumentDisplay = ({ argument, side }: ArgumentDisplayProps) => {
@@ -22,12 +37,12 @@ export const ArgumentDisplay = ({ argument, side }: ArgumentDisplayProps) => {
                 side === 'left' ? 'bg-pixel-blue' : 'bg-pixel-hot-pink'
               }`}
             />
-            <span className="text-sm-pixel text-pixel-cream">
-              {argument.agentName}
+            <span className="text-md-pixel text-pixel-cream">
+              {getChoiceName(argument.agentName)}
             </span>
           </div>
-          <p className="text-xs-pixel text-pixel-cream leading-relaxed">
-            {argument.argument}
+          <p className="text-lg-pixel text-pixel-cream leading-relaxed">
+            {cleanArgumentText(argument.argument)}
           </p>
         </div>
       </PixelCard>

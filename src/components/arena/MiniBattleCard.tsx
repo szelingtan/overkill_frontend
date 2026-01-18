@@ -260,7 +260,7 @@ export const MiniBattleCard = ({ battle, onClick, isActive }: MiniBattleCardProp
             animate={{ opacity: 1 }}
           >
             <PixelText variant="small" className="text-pixel-pink truncate block">
-              {currentTurn.loserName} takes {Math.floor(currentTurn.damage)} DMG!
+              {currentTurn.loserName ? getChoiceName(currentTurn.loserName) : "unknown"} takes {Math.floor(currentTurn.damage)} DMG!
             </PixelText>
           </motion.div>
         )}

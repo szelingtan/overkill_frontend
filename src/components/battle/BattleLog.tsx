@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { PixelCard, PixelText } from '../common'
 import type { BattleTurn } from '../../store/types'
+import { getChoiceName } from '@/util/flatten'
 
 interface BattleLogProps {
   turns: BattleTurn[]
@@ -23,7 +24,7 @@ export const BattleLog = ({ turns }: BattleLogProps) => {
             animate={{ opacity: 1, x: 0 }}
           >
             <span className="text-pixel-cream">Turn {turn.turnNumber}:</span>{' '}
-            {turn.loserName || 'Unknown'} took {Math.floor(turn.damage)} damage!
+            {turn.loserName ? getChoiceName(turn.loserName) : 'Unknown'} took {Math.floor(turn.damage)} damage!
           </motion.div>
         ))}
       </div>
