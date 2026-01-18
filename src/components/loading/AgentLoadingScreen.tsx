@@ -130,9 +130,10 @@ export const AgentLoadingScreen = () => {
       // Start the game (triggers WebSocket events)
       await api.startGame(sessionId)
 
-      // Navigate to arena
-      setCurrentScreen('arena')
+      // Navigate first, then update screen state to avoid race condition
+      // where route guard re-evaluates before navigation completes
       navigate('/arena')
+      setCurrentScreen('arena')
     } catch (err) {
       console.error('Failed to start game:', err)
       setError('Failed to start game. Please try again.')

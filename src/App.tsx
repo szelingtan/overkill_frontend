@@ -26,7 +26,7 @@ function App() {
           <Route
             path="/loading"
             element={
-              hasValidSession && currentScreen === 'loading' ? (
+              hasValidSession ? (
                 <AgentLoadingScreen />
               ) : (
                 <Navigate to="/" replace />
