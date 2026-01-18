@@ -1,8 +1,12 @@
 import { Choice, GameSetupData, JudgeAgent } from "@/store/types";
 
-// Util fns to convert UI input to strings for use by the backend
+// Util fns to convert UI input to structured data for the backend
 function flattenJudgeAgent(judgeAgent: JudgeAgent) {
-    return `Name: ${judgeAgent.name}, Personality: ${judgeAgent.personality}${judgeAgent.customPrompt ? ", Custom prompt: " + judgeAgent.customPrompt : ""}`;
+    // Return structured data instead of string for backend to spawn correct judges
+    return {
+        personality: judgeAgent.personality,
+        name: judgeAgent.name
+    };
 }
 
 function flattenChoice(choice: Choice) {
