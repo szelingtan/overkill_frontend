@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion'
 import type { Battle, ChoiceAgent } from '../../store/types'
+import { useGameStore } from '../../store/gameStore'
 import { PixelText } from '../common'
+import { AgentAvatar } from '../common/AgentAvatar'
 import { MiniBattleCard } from './MiniBattleCard'
 import { getChoiceName } from '@/util/flatten'
 
@@ -12,6 +14,9 @@ interface BattleGridProps {
 }
 
 export const BattleGrid = ({ battles, byeAgent, onSelectBattle, focusedBattleId }: BattleGridProps) => {
+  const { agents } = useGameStore()
+  const allAgentIds = agents.map(a => a.id)
+
   // Calculate grid columns based on number of battles
   const getGridCols = () => {
     if (battles.length <= 1) return 'grid-cols-1 max-w-md'
@@ -72,7 +77,11 @@ export const BattleGrid = ({ battles, byeAgent, onSelectBattle, focusedBattleId 
               Sitting out this round:
             </PixelText>
             <div className="flex items-center justify-center gap-2">
-              <span className="text-2xl">{byeAgent.avatarEmoji || '🎭'}</span>
+              <AgentAvatar
+                agentId={byeAgent.id}
+                allAgentIds={allAgentIds}
+                size="2xl"
+              />
               <PixelText variant="body" className="text-pixel-cream">
                 {getChoiceName(byeAgent.name)}
               </PixelText>

@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useGameStore } from '../../store/gameStore'
 import { PixelText, PixelButton, PixelCard } from '../common'
+import { AgentAvatar } from '../common/AgentAvatar'
 import { RankingList } from './RankingList'
 import { HighlightReel } from './HighlightReel'
 import { getChoiceName } from '@/util/flatten'
@@ -9,6 +10,7 @@ import { getChoiceName } from '@/util/flatten'
 export const VictoryScreen = () => {
   const navigate = useNavigate()
   const { winner, rankings, battleHistory, reset } = useGameStore()
+  const allAgentIds = rankings.map(a => a.id)
 
   const handleNewGame = () => {
     reset()
@@ -94,16 +96,16 @@ export const VictoryScreen = () => {
           <PixelCard className="border-pixel-pink bg-pixel-pink/20 inline-block">
             <div className="space-y-3">
               <div className="flex items-center gap-4 justify-center">
-                <motion.div
-                  className="text-6xl"
+                <AgentAvatar
+                  agentId={winner.id}
+                  allAgentIds={allAgentIds}
+                  size="6xl"
                   animate={{
                     scale: [1, 1.2, 1],
                     rotate: [0, 10, -10, 0],
                   }}
                   transition={{ duration: 2, repeat: Infinity }}
-                >
-                  {winner.avatarEmoji || '🏆'}
-                </motion.div>
+                />
                 <div className="text-left">
                   <PixelText variant="h2" className="text-pixel-cream">
                     {getChoiceName(winner.name)}

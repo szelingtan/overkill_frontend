@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import type { ChoiceAgent } from '../../store/types'
 import { PixelText, HPBar } from '../common'
+import { AgentAvatar } from '../common/AgentAvatar'
 import { getChoiceName } from '@/util/flatten'
 
 interface AgentRevealCardProps {
@@ -38,15 +39,14 @@ export const AgentRevealCard = ({ agent, index, isRevealed }: AgentRevealCardPro
           style={{ backfaceVisibility: 'hidden' }}
         >
           <div className="flex flex-col h-full">
-            {/* Header with emoji and name */}
+            {/* Header with gladiator sprite and name */}
             <div className="flex items-center gap-3 mb-3">
-              <motion.div
-                className="text-4xl"
+              <AgentAvatar
+                index={index}
+                size="xl"
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
-              >
-                {agent.avatarEmoji || '🎭'}
-              </motion.div>
+              />
               <div className="flex-1 min-w-0">
                 <PixelText variant="h3" className="text-pixel-cream truncate">
                   {getChoiceName(agent.name)}

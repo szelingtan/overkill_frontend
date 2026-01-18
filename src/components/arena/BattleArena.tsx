@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useGameStore } from '../../store/gameStore'
+import { AgentAvatar } from '../common/AgentAvatar'
 import { RoundOverview } from './RoundOverview'
 import { BattleGrid } from './BattleGrid'
 import { ArenaHUD } from './ArenaHUD'
@@ -21,6 +22,8 @@ export const BattleArena = () => {
     setFocusedBattle,
     setCurrentScreen,
   } = useGameStore()
+
+  const allAgentIds = agents.map(a => a.id)
 
   // Navigate to battle detail view when a battle is focused
   useEffect(() => {
@@ -142,13 +145,13 @@ export const BattleArena = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
                       >
-                        <motion.div
-                          className="text-3xl"
+                        <AgentAvatar
+                          agentId={agent.id}
+                          allAgentIds={allAgentIds}
+                          size="3xl"
                           animate={{ y: [0, -5, 0] }}
                           transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
-                        >
-                          {agent.avatarEmoji || '🎭'}
-                        </motion.div>
+                        />
                         <PixelText variant="small" className="text-pixel-cream">
                           {getChoiceName(agent.name)}
                         </PixelText>

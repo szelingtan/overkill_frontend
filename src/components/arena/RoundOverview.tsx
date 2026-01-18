@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion'
 import type { Round, ChoiceAgent } from '../../store/types'
 import { PixelText } from '../common'
+import { AgentAvatar } from '../common/AgentAvatar'
+import { useGameStore } from '../../store/gameStore'
 import { getChoiceName } from '@/util/flatten'
 
 interface RoundOverviewProps {
@@ -11,6 +13,8 @@ interface RoundOverviewProps {
 }
 
 export const RoundOverview = ({ round, roundHistory, aliveAgents, eliminatedAgents }: RoundOverviewProps) => {
+  const { agents } = useGameStore()
+  const allAgentIds = agents.map(a => a.id)
   const roundNumber = round?.roundNumber ?? (roundHistory.length + 1)
   const completedBattles = round?.matchups.filter((m) => m.status === 'completed').length ?? 0
   const totalBattles = round?.matchups.length ?? 0
@@ -97,10 +101,10 @@ export const RoundOverview = ({ round, roundHistory, aliveAgents, eliminatedAgen
           {eliminatedAgents.map((agent) => (
             <div
               key={agent.id}
-              className="bg-pixel-dark/50 border border-pixel-gray/50 rounded px-2 py-1 opacity-50"
+              className="bg-pixel-dark/50 border border-pixel-gray/50 rounded px-2 py-1 opacity-50 flex items-center gap-1"
             >
-              <span className="text-lg grayscale">{agent.avatarEmoji || '🎭'}</span>
-              <PixelText variant="small" className="text-pixel-gray ml-1">
+              <AgentAvatar agentId={agent.id} allAgentIds={allAgentIds} size="lg" grayscale={true} />
+              <PixelText variant="small" className="text-pixel-gray">
                 {getChoiceName(agent.name)}
               </PixelText>
             </div>

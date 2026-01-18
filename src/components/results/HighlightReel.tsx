@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion'
 import { PixelCard, PixelText } from '../common'
+import { AgentAvatar } from '../common/AgentAvatar'
+import { useGameStore } from '../../store/gameStore'
 import type { Battle } from '../../store/types'
 import { getChoiceName } from '@/util/flatten'
 
@@ -8,15 +10,18 @@ interface HighlightReelProps {
 }
 
 export const HighlightReel = ({ battles }: HighlightReelProps) => {
+  const { agents } = useGameStore()
+  const allAgentIds = agents.map(a => a.id)
+
   // Get some notable moments from battles
   const highlights = battles
     .flatMap((battle) =>
       battle.turns.map((turn) => ({
         battleId: battle.id,
+        agent1Id: battle.agent1.id,
         agent1Name: getChoiceName(battle.agent1.name),
-        agent1Emoji: battle.agent1.avatarEmoji,
+        agent2Id: battle.agent2.id,
         agent2Name: getChoiceName(battle.agent2.name),
-        agent2Emoji: battle.agent2.avatarEmoji,
         winnerName: turn.winnerName,
         loserName: turn.loserName,
         argument1: turn.argument1,
@@ -50,9 +55,11 @@ export const HighlightReel = ({ battles }: HighlightReelProps) => {
             <PixelCard className="border-pixel-pink">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm-pixel text-pixel-cream">
-                    {highlight.agent1Emoji || '🎭'} {highlight.agent1Name} vs {highlight.agent2Name} {highlight.agent2Emoji || '🎭'}
-                  </span>
+                  <div className="flex items-center gap-1 text-sm-pixel text-pixel-cream">
+                    <AgentAvatar agentId={highlight.agent1Id} allAgentIds={allAgentIds} size="sm" />
+                    {highlight.agent1Name} vs {highlight.agent2Name}
+                    <AgentAvatar agentId={highlight.agent2Id} allAgentIds={allAgentIds} size="sm" />
+                  </div>
                   <span className="text-sm-pixel text-pixel-hot-pink">
                     {Math.floor(highlight.damage)} DMG{highlight.wasCritical ? ' CRIT!' : '!'}
                   </span>

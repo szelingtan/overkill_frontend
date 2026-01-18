@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion'
 import type { Battle } from '../../store/types'
+import { useGameStore } from '../../store/gameStore'
 import { PixelText, HPBar } from '../common'
+import { AgentAvatar } from '../common/AgentAvatar'
 import { getChoiceName } from '@/util/flatten'
 
 interface MiniBattleCardProps {
@@ -11,6 +13,7 @@ interface MiniBattleCardProps {
 
 export const MiniBattleCard = ({ battle, onClick, isActive }: MiniBattleCardProps) => {
   const { agent1, agent2, turns, status } = battle
+  const { agents } = useGameStore()
   const currentTurn = turns[turns.length - 1]
   const isComplete = status === 'ended'
 
@@ -18,6 +21,9 @@ export const MiniBattleCard = ({ battle, onClick, isActive }: MiniBattleCardProp
   const winnerId = battle.winner
   const agent1Won = winnerId === agent1.id
   const agent2Won = winnerId === agent2.id
+
+  // Get all agent IDs for sprite mapping
+  const allAgentIds = agents.map(a => a.id)
 
   return (
     <div className="relative pt-2 pr-2">
@@ -63,13 +69,15 @@ export const MiniBattleCard = ({ battle, onClick, isActive }: MiniBattleCardProp
         <div className="flex items-center justify-between gap-1">
           {/* Agent 1 */}
           <div className={`flex-1 min-w-0 text-center ${agent1Won ? 'ring-2 ring-pixel-green rounded p-1' : ''}`}>
-            <motion.div
-              className="text-2xl mb-1"
-              animate={status === 'in_progress' ? { rotate: [-5, 5, -5] } : {}}
-              transition={{ duration: 0.5, repeat: Infinity }}
-            >
-              {agent1.avatarEmoji || '🎭'}
-            </motion.div>
+            <div className="flex justify-center mb-1">
+              <AgentAvatar
+                agentId={agent1.id}
+                allAgentIds={allAgentIds}
+                size="2xl"
+                animate={status === 'in_progress' ? { rotate: [-5, 5, -5] } : {}}
+                transition={{ duration: 0.5, repeat: Infinity }}
+              />
+            </div>
             <PixelText variant="small" className="text-pixel-cream truncate block max-w-full">
               {getChoiceName(agent1.name)}
             </PixelText>
@@ -97,13 +105,15 @@ export const MiniBattleCard = ({ battle, onClick, isActive }: MiniBattleCardProp
 
           {/* Agent 2 */}
           <div className={`flex-1 min-w-0 text-center ${agent2Won ? 'ring-2 ring-pixel-green rounded p-1' : ''}`}>
-            <motion.div
-              className="text-2xl mb-1"
-              animate={status === 'in_progress' ? { rotate: [5, -5, 5] } : {}}
-              transition={{ duration: 0.5, repeat: Infinity }}
-            >
-              {agent2.avatarEmoji || '🎭'}
-            </motion.div>
+            <div className="flex justify-center mb-1">
+              <AgentAvatar
+                agentId={agent2.id}
+                allAgentIds={allAgentIds}
+                size="2xl"
+                animate={status === 'in_progress' ? { rotate: [5, -5, 5] } : {}}
+                transition={{ duration: 0.5, repeat: Infinity }}
+              />
+            </div>
             <PixelText variant="small" className="text-pixel-cream truncate block max-w-full">
               {getChoiceName(agent2.name)}
             </PixelText>

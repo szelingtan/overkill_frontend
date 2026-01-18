@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { PixelCard, HPBar } from '../common'
+import { AgentAvatar } from '../common/AgentAvatar'
 import type { ChoiceAgent } from '../../store/types'
 import { getChoiceName } from '@/util/flatten'
 
@@ -10,6 +11,7 @@ interface RankingListProps {
 const MEDALS = ['🥇', '🥈', '🥉']
 
 export const RankingList = ({ rankings }: RankingListProps) => {
+  const allAgentIds = rankings.map(a => a.id)
   return (
     <div className="space-y-4">
       {rankings.map((agent, index) => (
@@ -43,7 +45,7 @@ export const RankingList = ({ rankings }: RankingListProps) => {
               {/* Agent Info */}
               <div className="flex-1 space-y-2">
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">{agent.avatarEmoji || '🎭'}</span>
+                  <AgentAvatar agentId={agent.id} allAgentIds={allAgentIds} size="2xl" />
                   <span className="text-md-pixel text-pixel-cream">
                     {getChoiceName(agent.name)}
                   </span>

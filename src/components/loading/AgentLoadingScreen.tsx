@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useGameStore } from '../../store/gameStore'
 import { api } from '../../services/api'
 import { PixelText, PixelButton, LoadingSpinner } from '../common'
+import { AgentAvatar } from '../common/AgentAvatar'
 import { AgentRevealCard } from './AgentRevealCard'
 import { JudgeRevealCard } from './JudgeRevealCard'
 import { getChoiceName } from '@/util/flatten'
@@ -230,9 +231,9 @@ export const AgentLoadingScreen = () => {
 
               {/* Show agents in background (smaller) */}
               <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 mb-8 opacity-50">
-                {agents.map((agent) => (
-                  <div key={agent.id} className="text-center">
-                    <div className="text-2xl">{agent.avatarEmoji || '🎭'}</div>
+                {agents.map((agent, idx) => (
+                  <div key={agent.id} className="text-center flex flex-col items-center">
+                    <AgentAvatar index={idx} size="2xl" />
                     <PixelText variant="small" className="text-pixel-cream truncate">
                       {getChoiceName(agent.name)}
                     </PixelText>
@@ -295,15 +296,14 @@ export const AgentLoadingScreen = () => {
 
               {/* Mini agent display */}
               <div className="flex justify-center gap-2 flex-wrap mb-8">
-                {agents.map((agent) => (
-                  <motion.div
+                {agents.map((agent, idx) => (
+                  <AgentAvatar
                     key={agent.id}
-                    className="text-2xl"
+                    index={idx}
+                    size="2xl"
                     animate={{ y: [0, -5, 0] }}
                     transition={{ duration: 1, repeat: Infinity, delay: Math.random() * 0.5 }}
-                  >
-                    {agent.avatarEmoji || '🎭'}
-                  </motion.div>
+                  />
                 ))}
               </div>
 

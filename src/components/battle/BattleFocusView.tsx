@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useGameStore } from '../../store/gameStore'
 import { PixelText, PixelButton, PixelCard, HPBar } from '../common'
+import { AgentAvatar } from '../common/AgentAvatar'
 import { ArgumentDisplay } from './ArgumentDisplay'
 import { JudgePanel } from './JudgePanel'
 import { DamageAnimation } from './DamageAnimation'
@@ -13,6 +14,7 @@ import { getChoiceName } from '@/util/flatten'
 export const BattleFocusView = () => {
   const navigate = useNavigate()
   const {
+    agents,
     activeBattles,
     focusedBattleId,
     setFocusedBattle,
@@ -26,6 +28,7 @@ export const BattleFocusView = () => {
 
   // Find the focused battle
   const battle: Battle | undefined = activeBattles.find((b) => b.id === focusedBattleId)
+  const allAgentIds = agents.map(a => a.id)
 
   // Handle back navigation
   const handleBack = () => {
@@ -123,9 +126,11 @@ export const BattleFocusView = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="mb-6"
+            className="mb-6 flex flex-col items-center"
           >
-            <div className="text-6xl mb-4">{winner.avatarEmoji || '🎭'}</div>
+            <div className="mb-4">
+              <AgentAvatar agentId={winner.id} allAgentIds={allAgentIds} size="6xl" />
+            </div>
             <PixelText variant="h2" className="text-pixel-cream mb-2">
               {getChoiceName(winner.name)}
             </PixelText>
@@ -213,13 +218,13 @@ export const BattleFocusView = () => {
           <PixelCard className={`border-pixel-blue ${battle.winner === agent1.id ? 'ring-4 ring-pixel-green' : ''}`}>
             <div className="space-y-3">
               <div className="flex items-center gap-3">
-                <motion.div
-                  className="text-4xl"
+                <AgentAvatar
+                  agentId={agent1.id}
+                  allAgentIds={allAgentIds}
+                  size="4xl"
                   animate={status === 'in_progress' ? { scale: [1, 1.1, 1] } : {}}
                   transition={{ duration: 1, repeat: Infinity }}
-                >
-                  {agent1.avatarEmoji || '🎭'}
-                </motion.div>
+                />
                 <div className="flex-1">
                   <PixelText variant="h3" className="text-pixel-cream">
                     {getChoiceName(agent1.name)}
@@ -281,13 +286,13 @@ export const BattleFocusView = () => {
           <PixelCard className={`border-pixel-pink ${battle.winner === agent2.id ? 'ring-4 ring-pixel-green' : ''}`}>
             <div className="space-y-3">
               <div className="flex items-center gap-3">
-                <motion.div
-                  className="text-4xl"
+                <AgentAvatar
+                  agentId={agent2.id}
+                  allAgentIds={allAgentIds}
+                  size="4xl"
                   animate={status === 'in_progress' ? { scale: [1, 1.1, 1] } : {}}
                   transition={{ duration: 1, repeat: Infinity, delay: 0.5 }}
-                >
-                  {agent2.avatarEmoji || '🎭'}
-                </motion.div>
+                />
                 <div className="flex-1">
                   <PixelText variant="h3" className="text-pixel-cream">
                     {getChoiceName(agent2.name)}
@@ -350,7 +355,7 @@ export const BattleFocusView = () => {
                   {/* Agent 1 Argument */}
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xl">{agent1.avatarEmoji || '🎭'}</span>
+                      <AgentAvatar agentId={agent1.id} allAgentIds={allAgentIds} size="xl" />
                       <PixelText variant="body" className="text-pixel-blue">
                         {getChoiceName(agent1.name)}
                       </PixelText>
@@ -364,7 +369,7 @@ export const BattleFocusView = () => {
                   {/* Agent 2 Argument */}
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xl">{agent2.avatarEmoji || '🎭'}</span>
+                      <AgentAvatar agentId={agent2.id} allAgentIds={allAgentIds} size="xl" />
                       <PixelText variant="body" className="text-pixel-pink">
                         {getChoiceName(agent2.name)}
                       </PixelText>
