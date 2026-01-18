@@ -26,6 +26,10 @@ export const BattleFocusView = () => {
   const [showBattleOverBanner, setShowBattleOverBanner] = useState(false)
   const [lastBattle, setLastBattle] = useState<Battle | null>(null)
 
+  // Animation states for gladiator clash
+  const [animationPhase, setAnimationPhase] = useState<'idle' | 'clash' | 'impact' | 'recoil'>('idle')
+  const [lastTurnLoser, setLastTurnLoser] = useState<string | null>(null)
+
   // Find the focused battle
   const battle: Battle | undefined = activeBattles.find((b) => b.id === focusedBattleId)
   const allAgentIds = agents.map(a => a.id)
@@ -55,16 +59,34 @@ export const BattleFocusView = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [battle, lastBattle])
 
-  // Show damage animation when new turn arrives
+  // Show damage animation and clash sequence when new turn arrives
   useEffect(() => {
     if (battle && battle.turns.length > 0) {
       const currentTurnIndex = battle.turns.length - 1
       if (currentTurnIndex > lastTurnIndex) {
         setLastTurnIndex(currentTurnIndex)
         setShowDamage(false)
-        // Show damage after arguments are displayed
-        const timer = setTimeout(() => setShowDamage(true), 2500)
-        return () => clearTimeout(timer)
+
+        const currentTurn = battle.turns[currentTurnIndex]
+        const loserId = currentTurn.loserName === battle.agent1.name ? battle.agent1.id : battle.agent2.id
+        setLastTurnLoser(loserId)
+
+        // Animation sequence: idle -> clash -> impact -> recoil
+        setAnimationPhase('idle')
+        const clashTimer = setTimeout(() => setAnimationPhase('clash'), 500)
+        const impactTimer = setTimeout(() => {
+          setAnimationPhase('impact')
+          setShowDamage(true)
+        }, 2500)
+        const recoilTimer = setTimeout(() => setAnimationPhase('recoil'), 2800)
+        const resetTimer = setTimeout(() => setAnimationPhase('idle'), 3500)
+
+        return () => {
+          clearTimeout(clashTimer)
+          clearTimeout(impactTimer)
+          clearTimeout(recoilTimer)
+          clearTimeout(resetTimer)
+        }
       }
     }
   }, [battle, lastTurnIndex])
@@ -73,6 +95,8 @@ export const BattleFocusView = () => {
   useEffect(() => {
     setLastTurnIndex(-1)
     setShowDamage(false)
+    setAnimationPhase('idle')
+    setLastTurnLoser(null)
   }, [focusedBattleId])
 
   // Show battle over banner if battle just ended
@@ -170,6 +194,97 @@ export const BattleFocusView = () => {
   const currentTurn = turns.length > 0 ? turns[turns.length - 1] : null
   const isComplete = status === 'ended'
 
+  // Determine if gladiators should be in center arena
+  const showCenterArena = ['clash', 'impact', 'recoil'].includes(animationPhase)
+
+  // Get animation for center arena gladiators (absolute positioned)
+  const getCenterGladiatorAnimation = (agentId: string, isLeftSide: boolean) => {
+    const isLoser = lastTurnLoser === agentId
+
+    switch (animationPhase) {
+      case 'clash':
+        // Move from sides to center
+        return {
+          x: 0,
+          y: 0,
+          scale: 1.8,
+          opacity: 1,
+        }
+      case 'impact':
+        // Impact shake
+        if (isLoser) {
+          return {
+            x: 0,
+            y: 0,
+            rotate: [0, -8, 8, -8, 8, 0],
+            scale: [1.8, 1.5, 1.8],
+            opacity: 1,
+          }
+        }
+        return {
+          x: 0,
+          y: 0,
+          scale: 1.8,
+          opacity: 1,
+        }
+      case 'recoil':
+        // Loser gets knocked back
+        if (isLoser) {
+          return {
+            x: isLeftSide ? -150 : 150,
+            y: 0,
+            rotate: isLeftSide ? -25 : 25,
+            scale: 1.4,
+            opacity: 0.7,
+          }
+        }
+        return {
+          x: isLeftSide ? 30 : -30,
+          y: -10,
+          scale: 1.9,
+          opacity: 1,
+        }
+      default:
+        // Initial position (off-screen or at card position)
+        return {
+          x: isLeftSide ? -400 : 400,
+          y: 0,
+          scale: 1,
+          opacity: 0,
+        }
+    }
+  }
+
+  // Get animation for card gladiators
+  const getCardGladiatorAnimation = (agentId: string) => {
+    const isWinner = battle.winner === agentId && isComplete
+
+    // Victory celebration when battle is complete
+    if (isWinner && isComplete) {
+      return {
+        scale: [1, 1.2, 1.1],
+        rotate: [0, -10, 10, 0],
+        y: [0, -10, 0],
+        opacity: 1,
+      }
+    }
+
+    // Hide during center arena fight
+    if (showCenterArena) {
+      return {
+        opacity: 0.3,
+        scale: 0.9,
+      }
+    }
+
+    // Idle breathing animation
+    if (status === 'in_progress' && !isComplete) {
+      return { scale: [1, 1.05, 1], opacity: 1 }
+    }
+
+    return { scale: 1, opacity: 1 }
+  }
+
   return (
     <div className="min-h-screen p-6 relative overflow-hidden">
       {/* Background effects */}
@@ -181,7 +296,20 @@ export const BattleFocusView = () => {
       <motion.div
         className="max-w-6xl mx-auto relative z-10"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        animate={
+          animationPhase === 'impact'
+            ? {
+                opacity: 1,
+                x: [0, -8, 8, -8, 8, 0],
+                y: [0, -4, 4, -4, 4, 0],
+              }
+            : { opacity: 1 }
+        }
+        transition={
+          animationPhase === 'impact'
+            ? { duration: 0.3, ease: 'easeInOut' }
+            : {}
+        }
       >
         {/* Header with Back Button */}
         <div className="flex items-center justify-between mb-6">
@@ -222,8 +350,11 @@ export const BattleFocusView = () => {
                   agentId={agent1.id}
                   allAgentIds={allAgentIds}
                   size="4xl"
-                  animate={status === 'in_progress' ? { scale: [1, 1.1, 1] } : {}}
-                  transition={{ duration: 1, repeat: Infinity }}
+                  animate={getCardGladiatorAnimation(agent1.id)}
+                  transition={{
+                    duration: 0.3,
+                    repeat: !showCenterArena && status === 'in_progress' ? Infinity : 0,
+                  }}
                 />
                 <div className="flex-1">
                   <PixelText variant="h3" className="text-pixel-cream">
@@ -268,18 +399,45 @@ export const BattleFocusView = () => {
           </PixelCard>
 
           {/* VS */}
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center relative">
             <motion.div
-              animate={{
-                scale: [1, 1.2, 1],
-                rotate: [0, 5, -5, 0],
+              animate={
+                animationPhase === 'impact'
+                  ? {
+                      scale: [1.2, 2, 1.2],
+                      rotate: [0, 180, 360],
+                    }
+                  : animationPhase === 'clash'
+                  ? {
+                      scale: [1, 1.5, 1],
+                    }
+                  : {
+                      scale: [1, 1.2, 1],
+                      rotate: [0, 5, -5, 0],
+                    }
+              }
+              transition={{
+                duration: animationPhase === 'impact' ? 0.4 : animationPhase === 'clash' ? 0.5 : 1.5,
+                repeat: animationPhase === 'idle' ? Infinity : 0,
               }}
-              transition={{ duration: 1.5, repeat: Infinity }}
             >
               <PixelText variant="h1" shadow className="text-pixel-hot-pink">
                 VS
               </PixelText>
             </motion.div>
+
+            {/* Impact Flash Effect */}
+            <AnimatePresence>
+              {animationPhase === 'impact' && (
+                <motion.div
+                  className="absolute inset-0 bg-white/60 rounded-full blur-xl"
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 3, opacity: [0, 1, 0] }}
+                  exit={{ scale: 4, opacity: 0 }}
+                  transition={{ duration: 0.4 }}
+                />
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Agent 2 */}
@@ -290,8 +448,12 @@ export const BattleFocusView = () => {
                   agentId={agent2.id}
                   allAgentIds={allAgentIds}
                   size="4xl"
-                  animate={status === 'in_progress' ? { scale: [1, 1.1, 1] } : {}}
-                  transition={{ duration: 1, repeat: Infinity, delay: 0.5 }}
+                  animate={getCardGladiatorAnimation(agent2.id)}
+                  transition={{
+                    duration: 0.3,
+                    repeat: !showCenterArena && status === 'in_progress' ? Infinity : 0,
+                    delay: !showCenterArena && status === 'in_progress' ? 0.5 : 0,
+                  }}
                 />
                 <div className="flex-1">
                   <PixelText variant="h3" className="text-pixel-cream">
@@ -335,6 +497,110 @@ export const BattleFocusView = () => {
             </div>
           </PixelCard>
         </div>
+
+        {/* Central Fighting Arena - Absolute positioned overlay */}
+        <AnimatePresence>
+          {showCenterArena && (
+            <motion.div
+              className="fixed inset-0 pointer-events-none flex items-center justify-center z-50"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              {/* Fighting gladiators */}
+              <div className="relative w-full h-full flex items-center justify-center">
+                {/* Agent 1 - Left Fighter */}
+                <motion.div
+                  className="absolute"
+                  initial={{ x: -400, opacity: 0 }}
+                  animate={getCenterGladiatorAnimation(agent1.id, true)}
+                  transition={{
+                    duration: animationPhase === 'impact' ? 0.3 : 0.6,
+                    type: animationPhase === 'impact' ? 'spring' : 'tween',
+                    stiffness: 400,
+                  }}
+                  style={{
+                    left: '35%',
+                    filter: animationPhase === 'impact' && lastTurnLoser === agent1.id ? 'brightness(0.7)' : 'brightness(1)',
+                  }}
+                >
+                  <AgentAvatar
+                    agentId={agent1.id}
+                    allAgentIds={allAgentIds}
+                    size="6xl"
+                  />
+                </motion.div>
+
+                {/* Agent 2 - Right Fighter */}
+                <motion.div
+                  className="absolute"
+                  initial={{ x: 400, opacity: 0 }}
+                  animate={getCenterGladiatorAnimation(agent2.id, false)}
+                  transition={{
+                    duration: animationPhase === 'impact' ? 0.3 : 0.6,
+                    type: animationPhase === 'impact' ? 'spring' : 'tween',
+                    stiffness: 400,
+                  }}
+                  style={{
+                    right: '35%',
+                    filter: animationPhase === 'impact' && lastTurnLoser === agent2.id ? 'brightness(0.7)' : 'brightness(1)',
+                  }}
+                >
+                  <AgentAvatar
+                    agentId={agent2.id}
+                    allAgentIds={allAgentIds}
+                    size="6xl"
+                  />
+                </motion.div>
+
+                {/* Impact Effect Lines */}
+                <AnimatePresence>
+                  {animationPhase === 'impact' && (
+                    <>
+                      {/* Horizontal impact lines */}
+                      {[...Array(5)].map((_, i) => (
+                        <motion.div
+                          key={`impact-h-${i}`}
+                          className="absolute h-1 bg-white"
+                          initial={{ width: 0, opacity: 0 }}
+                          animate={{ width: 400, opacity: [0, 1, 0] }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.3, delay: i * 0.05 }}
+                          style={{
+                            top: `${45 + i * 2}%`,
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                          }}
+                        />
+                      ))}
+                      {/* Radial impact lines */}
+                      {[...Array(8)].map((_, i) => {
+                        const angle = (i * 360) / 8
+                        return (
+                          <motion.div
+                            key={`impact-rad-${i}`}
+                            className="absolute w-2 bg-gradient-to-r from-white to-transparent"
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 200, opacity: [0, 1, 0] }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.4, delay: 0.1 }}
+                            style={{
+                              top: '50%',
+                              left: '50%',
+                              transformOrigin: 'top center',
+                              transform: `rotate(${angle}deg) translateX(-50%)`,
+                            }}
+                          />
+                        )
+                      })}
+                    </>
+                  )}
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Current Turn Arguments */}
         <AnimatePresence mode="wait">
