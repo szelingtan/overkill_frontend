@@ -27,8 +27,14 @@ export const BattleFocusView = () => {
   const [lastBattle, setLastBattle] = useState<Battle | null>(null)
 
   // Animation states for gladiator clash
-  const [animationPhase, setAnimationPhase] = useState<'idle' | 'clash' | 'impact' | 'recoil'>('idle')
+  const [animationPhase, setAnimationPhase] = useState<'idle' | 'approach' | 'clash' | 'impact' | 'recoil'>('idle')
   const [lastTurnLoser, setLastTurnLoser] = useState<string | null>(null)
+  const [lastTurnWinner, setLastTurnWinner] = useState<string | null>(null)
+
+  // Debug: Log animation phase changes
+  useEffect(() => {
+    console.log('🎭 Animation Phase Changed:', animationPhase)
+  }, [animationPhase])
 
   // Find the focused battle
   const battle: Battle | undefined = activeBattles.find((b) => b.id === focusedBattleId)
@@ -69,19 +75,40 @@ export const BattleFocusView = () => {
 
         const currentTurn = battle.turns[currentTurnIndex]
         const loserId = currentTurn.loserName === battle.agent1.name ? battle.agent1.id : battle.agent2.id
+        const winnerId = currentTurn.winnerName === battle.agent1.name ? battle.agent1.id : battle.agent2.id
         setLastTurnLoser(loserId)
+        setLastTurnWinner(winnerId)
 
-        // Animation sequence: idle -> clash -> impact -> recoil
-        setAnimationPhase('idle')
-        const clashTimer = setTimeout(() => setAnimationPhase('clash'), 500)
+        // Animation sequence: approach -> clash -> impact
+        // 3 clear steps - happens for EVERY turn!
+        console.log('🎬 ====== NEW TURN ====== Turn #', currentTurnIndex + 1)
+        console.log('Winner:', winnerId, 'Loser:', loserId)
+        console.log('⏰ STEP 1: APPROACH - Both gladiators moving toward each other')
+        setAnimationPhase('approach')  // Start immediately with approach
+
+        const clashTimer = setTimeout(() => {
+          console.log('⏰ STEP 2: CLASH - Attacker lunges forward!')
+          setAnimationPhase('clash')
+        }, 1500)  // Step 2 after approach (shortened)
+
         const impactTimer = setTimeout(() => {
+          console.log('⏰ STEP 3: IMPACT - Loser shakes and disappears!')
           setAnimationPhase('impact')
           setShowDamage(true)
-        }, 2500)
-        const recoilTimer = setTimeout(() => setAnimationPhase('recoil'), 2800)
-        const resetTimer = setTimeout(() => setAnimationPhase('idle'), 3500)
+        }, 3500)  // Step 3 after clash (shortened)
+
+        const recoilTimer = setTimeout(() => {
+          console.log('⏰ RECOIL - Winner returns')
+          setAnimationPhase('recoil')
+        }, 4500)
+
+        const resetTimer = setTimeout(() => {
+          console.log('✅ Turn animation complete, ready for next turn')
+          setAnimationPhase('approach')  // Keep visible, reset to approach position
+        }, 5500)  // Faster reset so next turn can start
 
         return () => {
+          console.log('❌ Cleanup called - timers being cleared!')
           clearTimeout(clashTimer)
           clearTimeout(impactTimer)
           clearTimeout(recoilTimer)
@@ -97,6 +124,7 @@ export const BattleFocusView = () => {
     setShowDamage(false)
     setAnimationPhase('idle')
     setLastTurnLoser(null)
+    setLastTurnWinner(null)
   }, [focusedBattleId])
 
   // Show battle over banner if battle just ended
@@ -195,61 +223,117 @@ export const BattleFocusView = () => {
   const isComplete = status === 'ended'
 
   // Determine if gladiators should be in center arena
-  const showCenterArena = ['clash', 'impact', 'recoil'].includes(animationPhase)
+  const showCenterArena = ['approach', 'clash', 'impact', 'recoil'].includes(animationPhase)
 
   // Get animation for center arena gladiators (absolute positioned)
   const getCenterGladiatorAnimation = (agentId: string, isLeftSide: boolean) => {
     const isLoser = lastTurnLoser === agentId
+    const isWinner = lastTurnWinner === agentId
 
     switch (animationPhase) {
-      case 'clash':
-        // Move from sides to center
+      case 'approach':
+        // STEP 1: Both gladiators move towards each other
+        console.log(`Approach - Agent ${agentId} (${isLeftSide ? 'LEFT' : 'RIGHT'}): winner=${isWinner}, loser=${isLoser}`)
         return {
-          x: 0,
+          x: isLeftSide ? -120 : 120,  // Both move inward to face each other
           y: 0,
-          scale: 1.8,
+          scale: 1.7,
           opacity: 1,
         }
-      case 'impact':
-        // Impact shake
-        if (isLoser) {
+
+      case 'clash':
+        // STEP 2: Attacker lunges forward, defender stays still
+        console.log(`Clash - Agent ${agentId} (${isLeftSide ? 'LEFT' : 'RIGHT'}): winner=${isWinner}, loser=${isLoser}`)
+        if (isWinner) {
+          // Attacker lunges forward to strike - BIG MOVEMENT
           return {
-            x: 0,
+            x: isLeftSide ? 60 : -60,  // BIG lunge toward opponent (180px movement!)
+            y: -25,  // Big jump for impact
+            scale: 2.2,
+            opacity: 1,
+          }
+        } else if (isLoser) {
+          // Defender DOES NOT MOVE - holds position
+          return {
+            x: isLeftSide ? -120 : 120,  // Stay exactly where they were
             y: 0,
-            rotate: [0, -8, 8, -8, 8, 0],
-            scale: [1.8, 1.5, 1.8],
+            scale: 1.7,
+            opacity: 1,
+          }
+        } else {
+          // Fallback - shouldn't happen but stay in place
+          return {
+            x: isLeftSide ? -120 : 120,
+            y: 0,
+            scale: 1.7,
             opacity: 1,
           }
         }
-        return {
-          x: 0,
-          y: 0,
-          scale: 1.8,
-          opacity: 1,
-        }
-      case 'recoil':
-        // Loser gets knocked back
+
+      case 'impact':
+        // STEP 3a: Loser shakes violently, winner at full extension
+        console.log(`Impact - Agent ${agentId} (${isLeftSide ? 'LEFT' : 'RIGHT'}): winner=${isWinner}, loser=${isLoser}`)
         if (isLoser) {
+          // Loser shakes and starts disappearing - VERY OBVIOUS
           return {
-            x: isLeftSide ? -150 : 150,
-            y: 0,
-            rotate: isLeftSide ? -25 : 25,
-            scale: 1.4,
-            opacity: 0.7,
+            x: isLeftSide ? -120 : 120,
+            y: [0, -10, 10, -10, 0],
+            rotate: [0, -30, 30, -30, 30, 0],  // VIOLENT shake
+            scale: [1.7, 1.3, 1.7, 1.3, 1.0],
+            opacity: [1, 0.8, 0.5, 0.2, 0],  // Rapid fade to invisible
+          }
+        } else if (isWinner) {
+          // Winner at full striking extension
+          return {
+            x: isLeftSide ? 100 : -100,  // Even closer - fully extended
+            y: -25,
+            scale: [2.2, 2.8, 2.5],  // HUGE impact emphasis
+            opacity: 1,
+          }
+        } else {
+          return {
+            x: isLeftSide ? 60 : -60,
+            y: -25,
+            scale: 2.2,
+            opacity: 1,
           }
         }
-        return {
-          x: isLeftSide ? 30 : -30,
-          y: -10,
-          scale: 1.9,
-          opacity: 1,
+
+      case 'recoil':
+        // STEP 3b: Loser completely gone, winner returns victorious
+        console.log(`Recoil - Agent ${agentId} (${isLeftSide ? 'LEFT' : 'RIGHT'}): winner=${isWinner}, loser=${isLoser}`)
+        if (isLoser) {
+          // Loser completely disappeared
+          return {
+            x: isLeftSide ? -200 : 200,
+            y: 50,
+            rotate: isLeftSide ? -60 : 60,
+            scale: 0.3,
+            opacity: 0,  // Fully invisible
+          }
+        } else if (isWinner) {
+          // Winner returns to center in triumph
+          return {
+            x: 0,  // Center of arena
+            y: -30,
+            scale: 2.5,
+            opacity: 1,
+          }
+        } else {
+          return {
+            x: 0,
+            y: -30,
+            scale: 2.5,
+            opacity: 1,
+          }
         }
+
       default:
-        // Initial position (off-screen or at card position)
+        // Initial position (off-screen)
         return {
-          x: isLeftSide ? -400 : 400,
+          x: isLeftSide ? -300 : 300,  // Start off screen
           y: 0,
-          scale: 1,
+          scale: 1.2,
           opacity: 0,
         }
     }
@@ -404,12 +488,18 @@ export const BattleFocusView = () => {
               animate={
                 animationPhase === 'impact'
                   ? {
-                      scale: [1.2, 2, 1.2],
+                      scale: [1.2, 2.5, 1.2],
                       rotate: [0, 180, 360],
                     }
                   : animationPhase === 'clash'
                   ? {
-                      scale: [1, 1.5, 1],
+                      scale: [1, 1.8, 1.3],
+                      rotate: [0, 10, -10, 0],
+                    }
+                  : animationPhase === 'approach'
+                  ? {
+                      scale: [1, 1.3, 1.2],
+                      opacity: [1, 0.8, 1],
                     }
                   : {
                       scale: [1, 1.2, 1],
@@ -417,7 +507,11 @@ export const BattleFocusView = () => {
                     }
               }
               transition={{
-                duration: animationPhase === 'impact' ? 0.4 : animationPhase === 'clash' ? 0.5 : 1.5,
+                duration:
+                  animationPhase === 'impact' ? 0.8 :
+                  animationPhase === 'clash' ? 2.0 :
+                  animationPhase === 'approach' ? 1.5 :
+                  2.0,
                 repeat: animationPhase === 'idle' ? Infinity : 0,
               }}
             >
@@ -512,16 +606,22 @@ export const BattleFocusView = () => {
               <div className="relative w-full h-full flex items-center justify-center">
                 {/* Agent 1 - Left Fighter */}
                 <motion.div
-                  className="absolute"
-                  initial={{ x: -400, opacity: 0 }}
+                  className="absolute left-[30%]"
+                  initial={{ x: -300, opacity: 0, scale: 1.2 }}
                   animate={getCenterGladiatorAnimation(agent1.id, true)}
                   transition={{
-                    duration: animationPhase === 'impact' ? 0.3 : 0.6,
+                    duration:
+                      animationPhase === 'approach' ? 1.5 :  // Step 1: Both approach
+                      animationPhase === 'clash' ? 2.0 :      // Step 2: Attacker lunges
+                      animationPhase === 'impact' ? 0.8 :     // Step 3a: Shake & fade
+                      animationPhase === 'recoil' ? 1.2 :     // Step 3b: Complete disappear
+                      0.5,
                     type: animationPhase === 'impact' ? 'spring' : 'tween',
-                    stiffness: 400,
+                    ease: animationPhase === 'clash' ? 'easeInOut' :
+                          animationPhase === 'approach' ? 'easeInOut' : 'easeOut',
+                    stiffness: 300,
                   }}
                   style={{
-                    left: '35%',
                     filter: animationPhase === 'impact' && lastTurnLoser === agent1.id ? 'brightness(0.7)' : 'brightness(1)',
                   }}
                 >
@@ -534,16 +634,22 @@ export const BattleFocusView = () => {
 
                 {/* Agent 2 - Right Fighter */}
                 <motion.div
-                  className="absolute"
-                  initial={{ x: 400, opacity: 0 }}
+                  className="absolute right-[30%]"
+                  initial={{ x: 300, opacity: 0, scale: 1.2 }}
                   animate={getCenterGladiatorAnimation(agent2.id, false)}
                   transition={{
-                    duration: animationPhase === 'impact' ? 0.3 : 0.6,
+                    duration:
+                      animationPhase === 'approach' ? 1.5 :  // Step 1: Both approach
+                      animationPhase === 'clash' ? 2.0 :      // Step 2: Attacker lunges
+                      animationPhase === 'impact' ? 0.8 :     // Step 3a: Shake & fade
+                      animationPhase === 'recoil' ? 1.2 :     // Step 3b: Complete disappear
+                      0.5,
                     type: animationPhase === 'impact' ? 'spring' : 'tween',
-                    stiffness: 400,
+                    ease: animationPhase === 'clash' ? 'easeInOut' :
+                          animationPhase === 'approach' ? 'easeInOut' : 'easeOut',
+                    stiffness: 300,
                   }}
                   style={{
-                    right: '35%',
                     filter: animationPhase === 'impact' && lastTurnLoser === agent2.id ? 'brightness(0.7)' : 'brightness(1)',
                   }}
                 >

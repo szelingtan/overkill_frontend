@@ -28,7 +28,7 @@ export const VictoryScreen = () => {
   }
 
   return (
-    <div className="min-h-screen p-8 py-16 relative overflow-hidden">
+    <div className="min-h-screen p-8 py-16 pb-24 relative overflow-x-hidden overflow-y-auto">
       {/* Confetti-like decorative elements */}
       <div className="absolute inset-0 pointer-events-none">
         {[...Array(20)].map((_, i) => (
