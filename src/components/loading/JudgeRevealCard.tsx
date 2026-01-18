@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import type { JudgeAgent } from '../../store/types'
 import { PixelText } from '../common'
+import { JudgeAvatar } from '../common/JudgeAvatar'
 
 interface JudgeRevealCardProps {
   judge: JudgeAgent
@@ -8,16 +9,7 @@ interface JudgeRevealCardProps {
   isRevealed: boolean
 }
 
-const personalityEmoji: Record<string, string> = {
-  funny: '🤡',
-  sarcastic: '😏',
-  nerd: '🤓',
-  serious: '🧐',
-  custom: '⚡',
-}
-
 export const JudgeRevealCard = ({ judge, index, isRevealed }: JudgeRevealCardProps) => {
-  const emoji = judge.avatarEmoji || judge.avatar || personalityEmoji[judge.personality] || '⚖️'
 
   return (
     <motion.div
@@ -37,13 +29,13 @@ export const JudgeRevealCard = ({ judge, index, isRevealed }: JudgeRevealCardPro
         } : {}}
         transition={{ duration: 2, repeat: Infinity }}
       >
-        <motion.div
-          className="text-3xl mb-2"
+        <JudgeAvatar
+          personality={judge.personality}
+          size="3xl"
+          className="mb-2 mx-auto"
           animate={isRevealed ? { rotate: [0, -10, 10, 0] } : {}}
           transition={{ duration: 2, repeat: Infinity }}
-        >
-          {emoji}
-        </motion.div>
+        />
         <PixelText variant="small" className="text-pixel-cream">
           {judge.name}
         </PixelText>

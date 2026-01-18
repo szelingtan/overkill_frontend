@@ -1,5 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { PixelCard, PixelText } from '../common'
+import { JudgeAvatar } from '../common/JudgeAvatar'
+import { useGameStore } from '../../store/gameStore'
 import type { JudgeVote } from '../../store/types'
 
 interface JudgePanelProps {
@@ -7,6 +9,13 @@ interface JudgePanelProps {
 }
 
 export const JudgePanel = ({ votes }: JudgePanelProps) => {
+  const { judges } = useGameStore()
+
+  // Helper to get judge personality by ID
+  const getJudgePersonality = (judgeId: string): string => {
+    const judge = judges.find(j => j.id === judgeId)
+    return judge?.personality || 'serious'
+  }
   return (
     <div className="space-y-4">
       <PixelText variant="h3" className="text-pixel-pink text-center">
@@ -33,13 +42,12 @@ export const JudgePanel = ({ votes }: JudgePanelProps) => {
                     <span className="text-sm-pixel text-pixel-pink">
                       {vote.judgeName}
                     </span>
-                    <motion.span
-                      className="text-lg-pixel"
+                    <JudgeAvatar
+                      personality={getJudgePersonality(vote.judgeId)}
+                      size="lg"
                       animate={{ rotate: [0, 10, -10, 0] }}
                       transition={{ duration: 0.5, delay: index * 0.3 }}
-                    >
-                      ⚖️
-                    </motion.span>
+                    />
                   </div>
 
                   {/* Reaction */}
