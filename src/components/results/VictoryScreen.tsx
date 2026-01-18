@@ -94,14 +94,15 @@ export const VictoryScreen = () => {
             <div className="space-y-3">
               <div className="flex items-center gap-4 justify-center">
                 <motion.div
-                  className="w-16 h-16 border-4 border-black"
-                  style={{ backgroundColor: winner.color }}
+                  className="text-6xl"
                   animate={{
                     scale: [1, 1.2, 1],
                     rotate: [0, 10, -10, 0],
                   }}
                   transition={{ duration: 2, repeat: Infinity }}
-                />
+                >
+                  {winner.avatarEmoji || '🏆'}
+                </motion.div>
                 <div className="text-left">
                   <PixelText variant="h2" className="text-pixel-cream">
                     {winner.name}
@@ -112,9 +113,17 @@ export const VictoryScreen = () => {
                 </div>
               </div>
 
-              <div className="text-sm-pixel text-pixel-cream max-w-lg">
-                {winner.description}
-              </div>
+              {winner.catchphrase && (
+                <div className="text-sm-pixel text-pixel-hot-pink max-w-lg italic">
+                  "{winner.catchphrase}"
+                </div>
+              )}
+
+              {winner.choice?.description && (
+                <div className="text-sm-pixel text-pixel-cream max-w-lg">
+                  {winner.choice.description}
+                </div>
+              )}
             </div>
           </PixelCard>
         </motion.div>
@@ -148,7 +157,7 @@ export const VictoryScreen = () => {
                   Final HP
                 </PixelText>
                 <PixelText variant="h2" className="text-pixel-green">
-                  {Math.floor(winner.globalHp)}
+                  {Math.floor(winner.currentGlobalHp)}
                 </PixelText>
               </div>
             </div>

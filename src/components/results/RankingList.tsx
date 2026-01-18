@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion'
 import { PixelCard, HPBar } from '../common'
-import type { Agent } from '../../store/types'
+import type { ChoiceAgent } from '../../store/types'
 
 interface RankingListProps {
-  rankings: Agent[]
+  rankings: ChoiceAgent[]
 }
 
 const MEDALS = ['🥇', '🥈', '🥉']
@@ -42,27 +42,28 @@ export const RankingList = ({ rankings }: RankingListProps) => {
               {/* Agent Info */}
               <div className="flex-1 space-y-2">
                 <div className="flex items-center gap-3">
-                  <div
-                    className="w-8 h-8 border-4 border-black"
-                    style={{ backgroundColor: agent.color }}
-                  />
+                  <span className="text-2xl">{agent.avatarEmoji || '🎭'}</span>
                   <span className="text-md-pixel text-pixel-cream">
                     {agent.name}
                   </span>
+                  {agent.status === 'eliminated' && (
+                    <span className="text-xs text-pixel-gray">(Eliminated)</span>
+                  )}
                 </div>
                 <HPBar
-                  current={agent.globalHp}
+                  current={agent.currentGlobalHp}
                   max={agent.maxGlobalHp}
                   label="Final HP"
                   size="sm"
                   showNumbers={true}
-                  animated={false}
                 />
-                <p className="text-xs-pixel text-pixel-gray">
-                  {agent.description.length > 100
-                    ? agent.description.slice(0, 100) + '...'
-                    : agent.description}
-                </p>
+                {agent.choice?.description && (
+                  <p className="text-xs-pixel text-pixel-gray">
+                    {agent.choice.description.length > 100
+                      ? agent.choice.description.slice(0, 100) + '...'
+                      : agent.choice.description}
+                  </p>
+                )}
               </div>
             </div>
           </PixelCard>

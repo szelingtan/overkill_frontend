@@ -12,11 +12,21 @@ export const HighlightReel = ({ battles }: HighlightReelProps) => {
     .flatMap((battle) =>
       battle.turns.map((turn) => ({
         battleId: battle.id,
-        agent1: battle.agent1.name,
-        agent2: battle.agent2.name,
-        ...turn,
+        agent1Name: battle.agent1.name,
+        agent1Emoji: battle.agent1.avatarEmoji,
+        agent2Name: battle.agent2.name,
+        agent2Emoji: battle.agent2.avatarEmoji,
+        winnerName: turn.winnerName,
+        loserName: turn.loserName,
+        argument1: turn.argument1,
+        argument2: turn.argument2,
+        votes: turn.votes,
+        damage: turn.damage,
+        turnNumber: turn.turnNumber,
+        wasCritical: turn.wasCritical,
       }))
     )
+    .filter((h) => h.damage > 0)
     .sort((a, b) => b.damage - a.damage)
     .slice(0, 5)
 
@@ -40,21 +50,23 @@ export const HighlightReel = ({ battles }: HighlightReelProps) => {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm-pixel text-pixel-cream">
-                    {highlight.agent1} vs {highlight.agent2}
+                    {highlight.agent1Emoji || '🎭'} {highlight.agent1Name} vs {highlight.agent2Name} {highlight.agent2Emoji || '🎭'}
                   </span>
                   <span className="text-sm-pixel text-pixel-hot-pink">
-                    {Math.floor(highlight.damage)} DMG!
+                    {Math.floor(highlight.damage)} DMG{highlight.wasCritical ? ' CRIT!' : '!'}
                   </span>
                 </div>
 
-                {highlight.arguments[0] && (
+                {/* Show the winning argument */}
+                {highlight.argument1 && (
                   <div className="text-xs-pixel text-pixel-cream bg-pixel-darker p-2 border border-pixel-light-purple">
-                    "{highlight.arguments[0].argument.slice(0, 150)}
-                    {highlight.arguments[0].argument.length > 150 ? '...' : ''}"
+                    <span className="text-pixel-blue">{highlight.argument1.agentName}:</span>{' '}
+                    "{highlight.argument1.argument.slice(0, 150)}
+                    {highlight.argument1.argument.length > 150 ? '...' : ''}"
                   </div>
                 )}
 
-                {highlight.votes[0] && (
+                {highlight.votes && highlight.votes[0] && (
                   <div className="text-xs-pixel text-pixel-gray">
                     <span className="text-pixel-blue">
                       {highlight.votes[0].judgeName}:

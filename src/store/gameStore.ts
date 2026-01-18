@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { GameState, Choice, JudgeAgent, ChoiceAgent, Battle, Encounter } from './types'
+import type { GameState, Choice, JudgeAgent, ChoiceAgent, Battle, Encounter, Round, ScreenType } from './types'
 
 const initialState = {
   context: '',
@@ -11,12 +11,18 @@ const initialState = {
   agents: [],
   arenaSize: { width: 20, height: 15 },
   encounters: [],
+  // Round management
+  currentRound: null,
+  roundHistory: [],
+  activeBattles: [],
+  focusedBattleId: null,
+  // Battle
   currentBattle: null,
   battleHistory: [],
   winner: null,
   rankings: [],
   isGameOver: false,
-  currentScreen: 'setup' as const,
+  currentScreen: 'setup' as ScreenType,
   isLoading: false,
   error: null,
 }
@@ -67,7 +73,10 @@ export const useGameStore = create<GameState>((set) => ({
     })),
 
   // Session actions
-  setSessionId: (id: string) => set({ sessionId: id }),
+  setSessionId: (id: string) => {
+    sessionStorage.setItem('gameSessionId', id)
+    set({ sessionId: id })
+  },
   setConnected: (connected: boolean) => set({ connected }),
   setCurrentScreen: (screen) => set({ currentScreen: screen }),
 
@@ -85,6 +94,55 @@ export const useGameStore = create<GameState>((set) => ({
     set((state) => ({
       encounters: [...state.encounters, encounter],
     })),
+
+  // Round management actions
+  startRound: (round: Round) =>
+    set((state) => ({
+      currentRound: round,
+      activeBattles: [],
+      focusedBattleId: null,
+    })),
+
+  updateRound: (data: Partial<Round>) =>
+    set((state) => ({
+      currentRound: state.currentRound
+        ? { ...state.currentRound, ...data }
+        : null,
+    })),
+
+  completeRound: () =>
+    set((state) => ({
+      roundHistory: state.currentRound
+        ? [...state.roundHistory, { ...state.currentRound, status: 'completed' as const }]
+        : state.roundHistory,
+      currentRound: null,
+      activeBattles: [],
+    })),
+
+  // Multi-battle support actions
+  addActiveBattle: (battle: Battle) =>
+    set((state) => ({
+      activeBattles: [...state.activeBattles, battle],
+    })),
+
+  updateActiveBattle: (battleId: string, data: Partial<Battle>) =>
+    set((state) => ({
+      activeBattles: state.activeBattles.map((b) =>
+        b.id === battleId ? { ...b, ...data } : b
+      ),
+    })),
+
+  removeActiveBattle: (battleId: string) =>
+    set((state) => ({
+      activeBattles: state.activeBattles.filter((b) => b.id !== battleId),
+      battleHistory: [
+        ...state.battleHistory,
+        ...state.activeBattles.filter((b) => b.id === battleId),
+      ],
+    })),
+
+  setFocusedBattle: (battleId: string | null) =>
+    set({ focusedBattleId: battleId }),
 
   // Battle actions
   startBattle: (battle: Battle) =>
@@ -126,5 +184,8 @@ export const useGameStore = create<GameState>((set) => ({
   setLoading: (loading: boolean) => set({ isLoading: loading }),
 
   // Reset
-  reset: () => set(initialState),
+  reset: () => {
+    sessionStorage.removeItem('gameSessionId')
+    set(initialState)
+  },
 }))

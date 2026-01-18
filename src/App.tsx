@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useGameStore } from './store/gameStore'
 import { useWebSocket } from './hooks/useWebSocket'
 import { GameSetup } from './components/setup/GameSetup'
+import { AgentLoadingScreen } from './components/loading/AgentLoadingScreen'
 import { BattleArena } from './components/arena/BattleArena'
 import { BattleScreen } from './components/battle/BattleScreen'
 import { VictoryScreen } from './components/results/VictoryScreen'
@@ -9,6 +10,9 @@ import { StarField } from './components/common/StarField'
 
 function App() {
   const { sessionId, currentScreen } = useGameStore()
+
+  // Use sessionStorage as fallback for route guards (avoids Zustand race conditions)
+  const hasValidSession = sessionId || sessionStorage.getItem('gameSessionId')
 
   // Initialize WebSocket connection when sessionId is available
   useWebSocket(sessionId)
@@ -20,9 +24,19 @@ function App() {
         <Routes>
           <Route path="/" element={<GameSetup />} />
           <Route
+            path="/loading"
+            element={
+              hasValidSession && currentScreen === 'loading' ? (
+                <AgentLoadingScreen />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route
             path="/arena"
             element={
-              sessionId && currentScreen === 'arena' ? (
+              hasValidSession ? (
                 <BattleArena />
               ) : (
                 <Navigate to="/" replace />
@@ -32,7 +46,7 @@ function App() {
           <Route
             path="/battle"
             element={
-              sessionId && currentScreen === 'battle' ? (
+              hasValidSession && currentScreen === 'battle' ? (
                 <BattleScreen />
               ) : (
                 <Navigate to="/arena" replace />
@@ -42,7 +56,7 @@ function App() {
           <Route
             path="/victory"
             element={
-              sessionId && currentScreen === 'victory' ? (
+              hasValidSession && currentScreen === 'victory' ? (
                 <VictoryScreen />
               ) : (
                 <Navigate to="/" replace />

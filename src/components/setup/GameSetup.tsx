@@ -2,10 +2,95 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useGameStore } from '../../store/gameStore'
-import { api } from '../../services/api'
+import { api, type ChoiceAgentInitResponse, type JudgeAgentInitResponse } from '../../services/api'
 import { PixelButton, PixelCard, PixelText, LoadingSpinner } from '../common'
 import { ChoiceInput } from './ChoiceInput'
 import { JudgeConfig } from './JudgeConfig'
+import type { ChoiceAgent, JudgeAgent as JudgeAgentType, Choice, JudgePersonality } from '../../store/types'
+
+// Test data for random fill
+const TEST_SCENARIOS = [
+  {
+    context: "I need to choose what to have for dinner tonight. I'm feeling hungry but can't decide between something quick and easy or something more elaborate. Budget is around $15-20.",
+    choices: [
+      { name: "Pizza", description: "Classic comfort food, quick delivery" },
+      { name: "Sushi", description: "Fresh and healthy, but pricier" },
+      { name: "Tacos", description: "Fun and customizable" },
+      { name: "Pasta", description: "Hearty and filling" },
+    ],
+  },
+  {
+    context: "Planning a weekend trip with friends. We have 2 days and want something fun and memorable. Budget is flexible but prefer not to break the bank.",
+    choices: [
+      { name: "Beach Getaway", description: "Relaxing by the ocean" },
+      { name: "Mountain Hiking", description: "Adventure and nature" },
+      { name: "City Exploration", description: "Food, culture, and nightlife" },
+    ],
+  },
+  {
+    context: "Need to pick a new TV show to binge watch. I have a week off and want something engaging that I can't stop watching.",
+    choices: [
+      { name: "Breaking Bad", description: "Intense drama about a chemistry teacher" },
+      { name: "The Office", description: "Lighthearted workplace comedy" },
+      { name: "Game of Thrones", description: "Epic fantasy adventure" },
+      { name: "Stranger Things", description: "Nostalgic sci-fi horror" },
+      { name: "Ted Lasso", description: "Feel-good sports comedy" },
+    ],
+  },
+  {
+    context: "Deciding on a new hobby to pick up. I have some free time on weekends and want something fulfilling and social.",
+    choices: [
+      { name: "Photography", description: "Capture beautiful moments" },
+      { name: "Rock Climbing", description: "Physical challenge and community" },
+      { name: "Cooking Classes", description: "Learn new cuisines" },
+      { name: "Board Gaming", description: "Strategy and social fun" },
+    ],
+  },
+  {
+    context: "Choosing a programming language to learn next. I already know JavaScript and want to expand my skills for career growth.",
+    choices: [
+      { name: "Python", description: "Versatile, great for AI/ML" },
+      { name: "Rust", description: "Fast and safe systems programming" },
+      { name: "Go", description: "Simple and great for backend" },
+      { name: "TypeScript", description: "Level up my JS skills" },
+    ],
+  },
+]
+
+const JUDGE_PRESETS: Array<{ personality: JudgePersonality; name: string }> = [
+  { personality: 'funny', name: 'The Comedian' },
+  { personality: 'sarcastic', name: 'The Roaster' },
+  { personality: 'nerd', name: 'The Professor' },
+  { personality: 'serious', name: 'The Judge' },
+]
+
+// Transform API response to store format
+const transformAgent = (apiAgent: ChoiceAgentInitResponse, choice: Choice): ChoiceAgent => ({
+  id: apiAgent.id,
+  name: apiAgent.name,
+  choice: choice,
+  color: `hsl(${Math.random() * 360}, 70%, 60%)`,
+  personality: apiAgent.personality,
+  fightingStyle: apiAgent.fighting_style,
+  catchphrase: apiAgent.catchphrase,
+  avatarEmoji: apiAgent.avatar_emoji,
+  currentBattleHp: apiAgent.battle_hp,
+  maxBattleHp: apiAgent.max_battle_hp,
+  currentGlobalHp: apiAgent.global_hp,
+  maxGlobalHp: apiAgent.max_global_hp,
+  position: { x: 0, y: 0 },
+  status: 'active',
+  wins: 0,
+  losses: apiAgent.losses,
+})
+
+const transformJudge = (apiJudge: JudgeAgentInitResponse): JudgeAgentType => ({
+  id: apiJudge.id,
+  name: apiJudge.name,
+  personality: apiJudge.personality_type as JudgeAgentType['personality'],
+  customPrompt: apiJudge.custom_prompt || undefined,
+  avatarEmoji: apiJudge.avatar_emoji,
+})
 
 export const GameSetup = () => {
   const navigate = useNavigate()
@@ -21,6 +106,7 @@ export const GameSetup = () => {
     removeJudge,
     setSessionId,
     setCurrentScreen,
+    setChoiceAgents,
     sessionId,
     currentScreen,
   } = useGameStore()
@@ -28,15 +114,47 @@ export const GameSetup = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Navigate to arena when session is created and screen is set to arena
+  // Navigate to loading screen when session is created
   useEffect(() => {
-    if (sessionId && currentScreen === 'arena') {
-      navigate('/arena')
+    if (sessionId && currentScreen === 'loading') {
+      navigate('/loading')
     }
   }, [sessionId, currentScreen, navigate])
 
   const handleContextChange = (value: string) => {
     setSetupData({ context: value })
+  }
+
+  const handleRandomFill = () => {
+    // Pick a random scenario
+    const scenario = TEST_SCENARIOS[Math.floor(Math.random() * TEST_SCENARIOS.length)]
+    
+    // Clear existing choices and judges
+    choices.forEach((c) => removeChoice(c.id))
+    judges.forEach((j) => removeJudge(j.id))
+    
+    // Set the context
+    setSetupData({ context: scenario.context })
+    
+    // Add choices
+    scenario.choices.forEach((choice) => {
+      addChoice({
+        id: `choice-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        name: choice.name,
+        description: choice.description,
+      })
+    })
+    
+    // Add 2-3 random judges
+    const numJudges = Math.floor(Math.random() * 2) + 2 // 2 or 3 judges
+    const shuffledJudges = [...JUDGE_PRESETS].sort(() => Math.random() - 0.5)
+    shuffledJudges.slice(0, numJudges).forEach((judge) => {
+      addJudge({
+        id: `judge-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        name: judge.name,
+        personality: judge.personality,
+      })
+    })
   }
 
   const canStartGame = () => {
@@ -64,15 +182,27 @@ export const GameSetup = () => {
       // Store session ID
       setSessionId(response.game_id)
 
-      // Start the game
-      await api.startGame(response.game_id)
+      // Transform and store generated agents
+      const transformedAgents = response.agents.map((apiAgent) => {
+        // Find the matching choice by name
+        const choice = choices.find((c) => c.name === apiAgent.name) || {
+          id: apiAgent.id,
+          name: apiAgent.name,
+        }
+        return transformAgent(apiAgent, choice)
+      })
+      setChoiceAgents(transformedAgents)
 
-      // Set screen to arena (navigation will happen via useEffect)
-      setCurrentScreen('arena')
+      // Transform and store judges (update with backend-generated data)
+      const transformedJudges = response.judges.map(transformJudge)
+      setSetupData({ judges: transformedJudges })
+
+      // Navigate to loading screen (will start game from there)
+      setCurrentScreen('loading')
 
     } catch (err) {
-      console.error('Failed to create or start game:', err)
-      setError('Failed to start game. Make sure the backend is running.')
+      console.error('Failed to create game:', err)
+      setError('Failed to create game. Make sure the backend is running.')
     } finally {
       setIsLoading(false)
     }
@@ -114,6 +244,23 @@ export const GameSetup = () => {
             <PixelText variant="small" className="text-pixel-pink mt-1">
               By watching AI agents battle your decisions out!
             </PixelText>
+            
+            {/* Random Fill Button for Testing */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="mt-4"
+            >
+              <PixelButton
+                onClick={handleRandomFill}
+                size="sm"
+                variant="secondary"
+                className="text-xs"
+              >
+                Random Fill (Testing)
+              </PixelButton>
+            </motion.div>
           </motion.div>
         </div>
 
@@ -174,7 +321,7 @@ export const GameSetup = () => {
         {/* Start Button */}
         <div className="flex justify-center">
           {isLoading ? (
-            <LoadingSpinner text="STARTING BATTLE..." />
+            <LoadingSpinner text="GENERATING GLADIATORS..." />
           ) : (
             <PixelButton
               onClick={handleStartGame}
