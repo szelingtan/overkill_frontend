@@ -59,7 +59,7 @@ export const JudgePanel = ({ votes }: JudgePanelProps) => {
                     animate={{ scale: 1 }}
                     transition={{ delay: index * 0.3 + 0.5, type: 'spring' }}
                   >
-                    VOTES FOR: {vote.votedFor}
+                    VOTES FOR: {vote.votedForName}
                   </motion.div>
                 </div>
               </PixelCard>

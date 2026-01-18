@@ -97,7 +97,7 @@ export const useGameStore = create<GameState>((set) => ({
 
   // Round management actions
   startRound: (round: Round) =>
-    set((state) => ({
+    set(() => ({
       currentRound: round,
       activeBattles: [],
       focusedBattleId: null,

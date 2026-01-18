@@ -23,7 +23,7 @@ export const BattleLog = ({ turns }: BattleLogProps) => {
             animate={{ opacity: 1, x: 0 }}
           >
             <span className="text-pixel-cream">Turn {turn.turnNumber}:</span>{' '}
-            {turn.loser} took {Math.floor(turn.damage)} damage!
+            {turn.loserName || 'Unknown'} took {Math.floor(turn.damage)} damage!
           </motion.div>
         ))}
       </div>

@@ -1,11 +1,12 @@
 import clsx from 'clsx'
 
-interface LoadingSpinnerProps {
+export interface LoadingSpinnerProps {
   size?: 'sm' | 'md' | 'lg'
   text?: string
+  className?: string
 }
 
-export const LoadingSpinner = ({ size = 'md', text }: LoadingSpinnerProps) => {
+export const LoadingSpinner = ({ size = 'md', text, className }: LoadingSpinnerProps) => {
   const sizes = {
     sm: 'w-6 h-6 border-2',
     md: 'w-8 h-8 border-4',
@@ -13,7 +14,7 @@ export const LoadingSpinner = ({ size = 'md', text }: LoadingSpinnerProps) => {
   }
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className={clsx('flex flex-col items-center gap-4', className)}>
       <div className={clsx('pixel-spinner', sizes[size])} />
       {text && (
         <p className="text-sm-pixel text-pixel-white animate-blink">{text}</p>

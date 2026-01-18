@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { WebSocketService } from '../services/websocket'
 import { useGameStore } from '../store/gameStore'
-import type { ChoiceAgent } from '../store/types'
+import type { ChoiceAgent, GameStartedData } from '../store/types'
 
 export const useWebSocket = (sessionId: string | null) => {
   const wsRef = useRef<WebSocketService | null>(null)
@@ -229,12 +229,22 @@ export const useWebSocket = (sessionId: string | null) => {
 
       const battle = useGameStore.getState().activeBattles.find((b) => b.id === rawData.battle_id)
       if (battle) {
+        // Update the battle's agent HP to reflect the damage
+        const updatedAgent1 = turn.loserId === battle.agent1.id
+          ? { ...battle.agent1, currentBattleHp: rawData.turn.loser_hp_after }
+          : battle.agent1
+        const updatedAgent2 = turn.loserId === battle.agent2.id
+          ? { ...battle.agent2, currentBattleHp: rawData.turn.loser_hp_after }
+          : battle.agent2
+
         updateActiveBattle(rawData.battle_id, {
           turns: [...battle.turns, turn],
           currentTurn: turn.turnNumber,
+          agent1: updatedAgent1,
+          agent2: updatedAgent2,
         })
 
-        // Update agent HP
+        // Update agent HP in global agents array
         if (turn.loserId) {
           updateChoiceAgent(turn.loserId, {
             currentBattleHp: rawData.turn.loser_hp_after

@@ -1,10 +1,15 @@
 import { motion } from 'framer-motion'
-import { type ButtonHTMLAttributes } from 'react'
+import { type ReactNode, type MouseEventHandler } from 'react'
 import clsx from 'clsx'
 
-interface PixelButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface PixelButtonProps {
+  children: ReactNode
   variant?: 'primary' | 'secondary' | 'danger'
   size?: 'sm' | 'md' | 'lg'
+  className?: string
+  disabled?: boolean
+  onClick?: MouseEventHandler<HTMLButtonElement>
+  type?: 'button' | 'submit' | 'reset'
 }
 
 export const PixelButton = ({
@@ -13,7 +18,8 @@ export const PixelButton = ({
   size = 'md',
   className,
   disabled,
-  ...props
+  onClick,
+  type = 'button',
 }: PixelButtonProps) => {
   const variants = {
     primary: 'bg-pixel-blue border-pixel-light-blue hover:bg-pixel-light-blue hover:text-pixel-dark',
@@ -29,6 +35,7 @@ export const PixelButton = ({
 
   return (
     <motion.button
+      type={type}
       className={clsx(
         'pixel-btn',
         variants[variant],
@@ -39,7 +46,7 @@ export const PixelButton = ({
       whileHover={!disabled ? { scale: 1.02 } : {}}
       whileTap={!disabled ? { scale: 0.98 } : {}}
       disabled={disabled}
-      {...props}
+      onClick={onClick}
     >
       {children}
     </motion.button>

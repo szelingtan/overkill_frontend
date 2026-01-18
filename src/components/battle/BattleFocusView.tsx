@@ -20,6 +20,8 @@ export const BattleFocusView = () => {
 
   const [showDamage, setShowDamage] = useState(false)
   const [lastTurnIndex, setLastTurnIndex] = useState(-1)
+  const [showBattleOverBanner, setShowBattleOverBanner] = useState(false)
+  const [lastBattle, setLastBattle] = useState<Battle | null>(null)
 
   // Find the focused battle
   const battle: Battle | undefined = activeBattles.find((b) => b.id === focusedBattleId)
@@ -30,6 +32,24 @@ export const BattleFocusView = () => {
     setCurrentScreen('arena')
     navigate('/arena')
   }
+
+  // Track when battle transitions from existing to not existing (battle ended and removed)
+  useEffect(() => {
+    if (battle) {
+      setLastBattle(battle)
+      setShowBattleOverBanner(false)
+    } else if (lastBattle && !battle) {
+      // Battle was removed - show banner and navigate back
+      setShowBattleOverBanner(true)
+      const timer = setTimeout(() => {
+        setFocusedBattle(null)
+        setCurrentScreen('arena')
+        navigate('/arena')
+      }, 3000) // Show banner for 3 seconds before navigating back
+      return () => clearTimeout(timer)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [battle, lastBattle])
 
   // Show damage animation when new turn arrives
   useEffect(() => {
@@ -50,6 +70,82 @@ export const BattleFocusView = () => {
     setLastTurnIndex(-1)
     setShowDamage(false)
   }, [focusedBattleId])
+
+  // Show battle over banner if battle just ended
+  if (!battle && showBattleOverBanner && lastBattle) {
+    const winner = lastBattle.agent1.id === lastBattle.winner ? lastBattle.agent1 : lastBattle.agent2
+
+    return (
+      <motion.div
+        className="min-h-screen flex flex-col items-center justify-center p-8 relative overflow-hidden"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        {/* Background effects */}
+        <div className="absolute inset-0 pointer-events-none">
+          <motion.div
+            className="absolute top-1/4 left-1/4 w-96 h-96 bg-pixel-green/20 rounded-full blur-3xl"
+            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+          <motion.div
+            className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pixel-pink/20 rounded-full blur-3xl"
+            animate={{ scale: [1.2, 1, 1.2], opacity: [0.6, 0.3, 0.6] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+        </div>
+
+        {/* Battle Over Banner */}
+        <motion.div
+          className="relative z-10 text-center"
+          initial={{ scale: 0.5, y: -50 }}
+          animate={{ scale: 1, y: 0 }}
+          transition={{ type: "spring", bounce: 0.4 }}
+        >
+          <motion.div
+            animate={{
+              textShadow: [
+                '0 0 20px rgba(134, 239, 172, 0.8)',
+                '0 0 40px rgba(134, 239, 172, 1)',
+                '0 0 20px rgba(134, 239, 172, 0.8)',
+              ]
+            }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            <PixelText variant="h1" shadow className="text-pixel-green mb-8">
+              BATTLE OVER!
+            </PixelText>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mb-6"
+          >
+            <div className="text-6xl mb-4">{winner.avatarEmoji || '🎭'}</div>
+            <PixelText variant="h2" className="text-pixel-cream mb-2">
+              {winner.name}
+            </PixelText>
+            <PixelText variant="h3" className="text-pixel-green">
+              VICTORIOUS!
+            </PixelText>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+          >
+            <PixelText variant="body" className="text-pixel-gray">
+              Returning to arena...
+            </PixelText>
+          </motion.div>
+        </motion.div>
+      </motion.div>
+    )
+  }
 
   if (!battle) {
     return (

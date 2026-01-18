@@ -1,9 +1,10 @@
 import { motion } from 'framer-motion'
-import { type HTMLAttributes, type ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import clsx from 'clsx'
 
-interface PixelCardProps extends HTMLAttributes<HTMLDivElement> {
+interface PixelCardProps {
   children: ReactNode
+  className?: string
   animate?: boolean
 }
 
@@ -11,21 +12,23 @@ export const PixelCard = ({
   children,
   className,
   animate = false,
-  ...props
 }: PixelCardProps) => {
-  const Component = animate ? motion.div : 'div'
+  if (animate) {
+    return (
+      <motion.div
+        className={clsx('pixel-card', className)}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+      >
+        {children}
+      </motion.div>
+    )
+  }
 
   return (
-    <Component
-      className={clsx('pixel-card', className)}
-      {...(animate && {
-        initial: { opacity: 0, y: 20 },
-        animate: { opacity: 1, y: 0 },
-        exit: { opacity: 0, y: -20 },
-      })}
-      {...props}
-    >
+    <div className={clsx('pixel-card', className)}>
       {children}
-    </Component>
+    </div>
   )
 }

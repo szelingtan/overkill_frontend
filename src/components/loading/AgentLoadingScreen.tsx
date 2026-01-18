@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useGameStore } from '../../store/gameStore'
@@ -14,7 +14,6 @@ export const AgentLoadingScreen = () => {
     judges,
     sessionId,
     setCurrentScreen,
-    setConnected,
   } = useGameStore()
 
   const [phase, setPhase] = useState<'intro' | 'agents' | 'judges' | 'ready'>('intro')
@@ -22,6 +21,7 @@ export const AgentLoadingScreen = () => {
   const [revealedJudges, setRevealedJudges] = useState<Set<number>>(new Set())
   const [isStarting, setIsStarting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const isNavigatingRef = useRef(false) // Synchronous guard against rapid clicks
 
   // Redirect if no session (check both Zustand and sessionStorage)
   useEffect(() => {
@@ -56,7 +56,7 @@ export const AgentLoadingScreen = () => {
       const initialDelay = setTimeout(revealNext, 500)
 
       // Reveal each agent
-      const intervals: NodeJS.Timeout[] = []
+      const intervals: ReturnType<typeof setTimeout>[] = []
       for (let i = 1; i < agents.length; i++) {
         intervals.push(setTimeout(revealNext, 500 + i * 800))
       }
@@ -88,7 +88,7 @@ export const AgentLoadingScreen = () => {
       }
 
       // Reveal each judge
-      const intervals: NodeJS.Timeout[] = [setTimeout(revealNext, 300)]
+      const intervals: ReturnType<typeof setTimeout>[] = [setTimeout(revealNext, 300)]
       for (let i = 1; i < judges.length; i++) {
         intervals.push(setTimeout(revealNext, 300 + i * 400))
       }
@@ -106,7 +106,9 @@ export const AgentLoadingScreen = () => {
   }, [phase, judges.length])
 
   const handleEnterArena = async () => {
-    if (!sessionId) return
+    // Synchronous guard - refs update immediately, preventing rapid clicks
+    if (!sessionId || isNavigatingRef.current) return
+    isNavigatingRef.current = true
 
     setIsStarting(true)
     setError(null)
@@ -122,6 +124,7 @@ export const AgentLoadingScreen = () => {
       console.error('Failed to start game:', err)
       setError('Failed to start game. Please try again.')
       setIsStarting(false)
+      isNavigatingRef.current = false // Reset on error so user can retry
     }
   }
 

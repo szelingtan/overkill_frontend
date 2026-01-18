@@ -109,7 +109,7 @@ export const BattleArena = () => {
         />
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
           {/* Battle Area */}
           <div className="min-h-[400px]">
             <AnimatePresence mode="wait">
