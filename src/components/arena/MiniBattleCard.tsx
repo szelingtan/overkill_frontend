@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import type { Battle } from '../../store/types'
 import { PixelText, HPBar } from '../common'
+import { getChoiceName } from '@/util/flatten'
 
 interface MiniBattleCardProps {
   battle: Battle
@@ -70,7 +71,7 @@ export const MiniBattleCard = ({ battle, onClick, isActive }: MiniBattleCardProp
               {agent1.avatarEmoji || '🎭'}
             </motion.div>
             <PixelText variant="small" className="text-pixel-cream truncate block max-w-full">
-              {agent1.name}
+              {getChoiceName(agent1.name)}
             </PixelText>
             <div className="mt-1 overflow-hidden">
               <HPBar
@@ -104,7 +105,7 @@ export const MiniBattleCard = ({ battle, onClick, isActive }: MiniBattleCardProp
               {agent2.avatarEmoji || '🎭'}
             </motion.div>
             <PixelText variant="small" className="text-pixel-cream truncate block max-w-full">
-              {agent2.name}
+              {getChoiceName(agent2.name)}
             </PixelText>
             <div className="mt-1 overflow-hidden">
               <HPBar

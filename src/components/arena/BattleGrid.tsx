@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import type { Battle, ChoiceAgent } from '../../store/types'
 import { PixelText } from '../common'
 import { MiniBattleCard } from './MiniBattleCard'
+import { getChoiceName } from '@/util/flatten'
 
 interface BattleGridProps {
   battles: Battle[]
@@ -73,7 +74,7 @@ export const BattleGrid = ({ battles, byeAgent, onSelectBattle, focusedBattleId 
             <div className="flex items-center justify-center gap-2">
               <span className="text-2xl">{byeAgent.avatarEmoji || '🎭'}</span>
               <PixelText variant="body" className="text-pixel-cream">
-                {byeAgent.name}
+                {getChoiceName(byeAgent.name)}
               </PixelText>
               <span className="text-pixel-green text-sm">(BYE)</span>
             </div>

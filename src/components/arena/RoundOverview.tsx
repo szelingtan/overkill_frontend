@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import type { Round, ChoiceAgent } from '../../store/types'
 import { PixelText } from '../common'
+import { getChoiceName } from '@/util/flatten'
 
 interface RoundOverviewProps {
   round: Round | null
@@ -100,7 +101,7 @@ export const RoundOverview = ({ round, roundHistory, aliveAgents, eliminatedAgen
             >
               <span className="text-lg grayscale">{agent.avatarEmoji || '🎭'}</span>
               <PixelText variant="small" className="text-pixel-gray ml-1">
-                {agent.name}
+                {getChoiceName(agent.name)}
               </PixelText>
             </div>
           ))}

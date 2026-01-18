@@ -6,6 +6,7 @@ import { RoundOverview } from './RoundOverview'
 import { BattleGrid } from './BattleGrid'
 import { ArenaHUD } from './ArenaHUD'
 import { PixelText, PixelButton, LoadingSpinner } from '../common'
+import { getChoiceName } from '@/util/flatten'
 
 export const BattleArena = () => {
   const navigate = useNavigate()
@@ -149,7 +150,7 @@ export const BattleArena = () => {
                           {agent.avatarEmoji || '🎭'}
                         </motion.div>
                         <PixelText variant="small" className="text-pixel-cream">
-                          {agent.name}
+                          {getChoiceName(agent.name)}
                         </PixelText>
                       </motion.div>
                     ))}
@@ -192,7 +193,7 @@ export const BattleArena = () => {
                       size="sm"
                       className="w-full text-xs"
                     >
-                      {battle.agent1.name} vs {battle.agent2.name}
+                      {getChoiceName(battle.agent1.name)} vs {getChoiceName(battle.agent2.name)}
                     </PixelButton>
                   ))}
                 </div>

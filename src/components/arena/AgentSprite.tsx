@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { HPBar } from '../common'
 import type { ChoiceAgent } from '../../store/types'
+import { getChoiceName } from '@/util/flatten'
 
 interface AgentSpriteProps {
   agent: ChoiceAgent
@@ -72,7 +73,7 @@ export const AgentSprite = ({ agent, cellSize }: AgentSpriteProps) => {
         className="text-xs-pixel text-pixel-cream text-center px-2 py-1 bg-pixel-purple/90 border border-pixel-light-purple whitespace-nowrap"
         style={{ maxWidth: cellSize * 2 }}
       >
-        {agent.name.length > 10 ? agent.name.slice(0, 10) + '...' : agent.name}
+        {getChoiceName(agent.name).length > 10 ? getChoiceName(agent.name).slice(0, 10) + '...' : getChoiceName(agent.name)}
       </div>
 
       {/* HP Bar */}

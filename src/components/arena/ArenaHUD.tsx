@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { PixelCard, HPBar, PixelText } from '../common'
 import type { ChoiceAgent } from '../../store/types'
+import { getChoiceName } from '@/util/flatten'
 
 interface ArenaHUDProps {
   agents: ChoiceAgent[]
@@ -58,7 +59,7 @@ export const ArenaHUD = ({ agents }: ArenaHUDProps) => {
                       style={{ backgroundColor: agent.color }}
                     />
                     <span className="text-sm-pixel text-pixel-cream flex-1">
-                      {agent.name}
+                      {getChoiceName(agent.name)}
                     </span>
                     {agent.status === 'battling' && (
                       <span className="text-xs-pixel text-pixel-hot-pink">
